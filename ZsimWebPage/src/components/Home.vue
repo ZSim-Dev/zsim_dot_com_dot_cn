@@ -18,7 +18,7 @@ function handleDownload() {
       <button class="download-btn" @click="handleDownload">下载桌面版</button>
       <div class="links">
         <router-link to="/docs" class="link-item">使用文档</router-link>
-        <a href="/vote" class="link-item">功能投票</a>  
+        <a href="/vote" class="link-item">功能投票</a>
       </div>
     </div>
   </div>
@@ -37,6 +37,7 @@ function handleDownload() {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -68,6 +69,7 @@ function handleDownload() {
   from {
     transform: scale(1);
   }
+
   to {
     transform: scale(1.05);
   }

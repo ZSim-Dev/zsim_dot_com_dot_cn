@@ -85,26 +85,10 @@ function switchMode() {
   <div class="login-page">
     <div class="login-box">
       <h2>{{ mode === 'login' ? '用户登录' : '用户注册' }}</h2>
-      <input
-        v-model="username"
-        class="login-input"
-        type="text"
-        placeholder="用户名"
-        autocomplete="username"
-      />
-      <input
-        v-model="password"
-        class="login-input"
-        type="password"
-        placeholder="密码"
-        autocomplete="current-password"
-        @keyup.enter="mode === 'login' ? handleLogin() : handleRegister()"
-      />
-      <button
-        class="login-btn"
-        :disabled="loading"
-        @click="mode === 'login' ? handleLogin() : handleRegister()"
-      >
+      <input v-model="username" class="login-input" type="text" placeholder="用户名" autocomplete="username" />
+      <input v-model="password" class="login-input" type="password" placeholder="密码" autocomplete="current-password"
+        @keyup.enter="mode === 'login' ? handleLogin() : handleRegister()" />
+      <button class="login-btn" :disabled="loading" @click="mode === 'login' ? handleLogin() : handleRegister()">
         {{ loading ? (mode === 'login' ? '登录中...' : '注册中...') : (mode === 'login' ? '登录' : '注册') }}
       </button>
       <button class="switch-btn" @click="switchMode" :disabled="loading">
@@ -123,21 +107,24 @@ function switchMode() {
   align-items: center;
   justify-content: center;
 }
+
 .login-box {
   background: #fff;
   border-radius: 8px;
   padding: 32px 24px 24px 24px;
   min-width: 280px;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
   align-items: stretch;
 }
+
 .login-box h2 {
   margin-bottom: 18px;
   text-align: center;
   color: #222;
 }
+
 .login-input {
   margin-bottom: 12px;
   padding: 8px 12px;
@@ -147,9 +134,11 @@ function switchMode() {
   outline: none;
   transition: border 0.2s;
 }
+
 .login-input:focus {
   border: 1.5px solid #2c3e50;
 }
+
 .login-btn {
   background: #2c3e50;
   color: #fff;
@@ -161,13 +150,16 @@ function switchMode() {
   margin-top: 8px;
   transition: background 0.2s;
 }
+
 .login-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
+
 .login-btn:hover:not(:disabled) {
   background: #1a2533;
 }
+
 .switch-btn {
   background: none;
   border: none;
@@ -178,13 +170,16 @@ function switchMode() {
   text-decoration: underline;
   transition: color 0.2s;
 }
+
 .switch-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
+
 .switch-btn:hover:not(:disabled) {
   color: #1a2533;
 }
+
 .login-error {
   color: #d32f2f;
   margin-top: 10px;
