@@ -18,7 +18,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import VueMarkdownIt from 'vue3-markdown-it'
-import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
 
 const mdContent = ref('')
