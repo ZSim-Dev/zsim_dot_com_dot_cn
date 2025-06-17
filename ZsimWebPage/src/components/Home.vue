@@ -7,10 +7,25 @@ function handleDownload() {
 </script>
 
 <template>
-  <router-view />
+  <div class="homepage">
+    <div class="header">
+      <div class="logo"></div>
+      <h1>ZSim 模拟器</h1>
+      <p class="description">ZSim 是一个独立的绝区零自动模拟器，我们实现了模拟绝区零的战斗，并支持全脚本化的出招。</p>
+    </div>
+
+    <div class="main-content">
+      <button class="download-btn" @click="handleDownload">下载桌面版</button>
+      <div class="links">
+        <router-link to="/docs" class="link-item">使用文档</router-link>
+        <a href="/vote" class="link-item">功能投票</a>  
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
+/* ...原有样式保持不变，直接复制即可... */
 .homepage {
   width: 100%;
   max-width: 1280px;
