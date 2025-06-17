@@ -25,7 +25,6 @@ function handleDownload() {
 </template>
 
 <style scoped>
-/* ...原有样式保持不变，直接复制即可... */
 .homepage {
   width: 100%;
   max-width: 1280px;
