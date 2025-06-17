@@ -1,10 +1,20 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const menuOpen = ref(false)
+
+const menuItems = [
+  { label: '主页', action: () => goHome() },
+  { label: '下载', action: () => goTo('/download') },
+  { label: '文档', action: () => goTo('/docs') },
+  { label: '投票', action: () => goTo('/vote') }
+]
 
 function goHome() {
   router.push({ name: 'Home' })
+  menuOpen.value = false
 }
 
 function goTo(url: string) {
@@ -13,19 +23,30 @@ function goTo(url: string) {
   } else {
     router.push(url)
   }
+  menuOpen.value = false
 }
 </script>
 
 <template>
   <header class="zsim-header fixed-header">
+    <!-- 汉堡菜单按钮，仅在小屏显示 -->
+    <button class="menu-toggle" @click.stop="menuOpen = !menuOpen" aria-label="展开菜单">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
     <div class="header-left" @click="goHome" style="cursor:pointer;">
       <img src="./assets/logo.svg" alt="logo" class="logo" />
-      <span class="zsim-title">Zsim</span>
+      <span class="zsim-title">ZSim 模拟器</span>
     </div>
+    <!-- 普通菜单，大屏显示 -->
     <nav class="header-menu">
-      <button @click="goHome" class="menu-btn">主页</button>
-      <button @click="goTo('/download')" class="menu-btn">下载</button>
-      <button @click="goTo('/docs')" class="menu-btn">文档</button>
+      <button
+        v-for="item in menuItems"
+        :key="item.label"
+        class="menu-btn"
+        @click="item.action"
+      >{{ item.label }}</button>
     </nav>
     <div class="header-right">
       <button class="github-btn" @click="goTo('https://github.com/your-repo')">
@@ -34,6 +55,17 @@ function goTo(url: string) {
         </svg>
       </button>
     </div>
+    <!-- 弹出菜单，小屏显示，添加 transition 动画 -->
+    <transition name="mobile-menu-fade">
+      <div v-if="menuOpen" class="mobile-menu" @click.self="menuOpen = false">
+        <button
+          v-for="item in menuItems"
+          :key="item.label"
+          class="menu-btn"
+          @click="item.action"
+        >{{ item.label }}</button>
+      </div>
+    </transition>
   </header>
   <div class="main-content">
     <router-view />
@@ -44,12 +76,13 @@ function goTo(url: string) {
 .zsim-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 56px;
-  padding: 0 32px;
+  padding: 0 16px;
   background: #fff;
   border-bottom: 1px solid #eee;
   box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  position: relative;
 }
 .fixed-header {
   position: fixed;
@@ -65,6 +98,7 @@ function goTo(url: string) {
   display: flex;
   align-items: center;
   margin-right: 0;
+  padding-left: 12px;
 }
 .logo {
   width: 32px;
@@ -73,12 +107,13 @@ function goTo(url: string) {
 }
 .zsim-title {
   font-size: 22px;
-  font-weight: bold;
+  font-weight: 600;
   color: #222;
   letter-spacing: 1px;
 }
 .header-menu {
   display: flex;
+  padding-left: 28px;
   margin-left: 0;
   gap: 0;
 }
@@ -101,6 +136,7 @@ function goTo(url: string) {
 .header-right {
   display: flex;
   align-items: center;
+  margin-left: auto;
 }
 .github-btn {
   background: none;
@@ -115,5 +151,83 @@ function goTo(url: string) {
 }
 .github-icon {
   display: block;
+}
+
+/* 汉堡按钮样式 */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  margin-left: 8px;
+  cursor: pointer;
+  z-index: 110;
+}
+.menu-toggle .bar {
+  width: 22px;
+  height: 2px;
+  background: #333;
+  margin: 3px 0;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+/* 移动端弹出菜单 */
+.mobile-menu {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  width: 100vw;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px 0;
+  z-index: 120;
+}
+.mobile-menu .menu-btn {
+  width: 100%;
+  text-align: left;
+  padding: 10px 24px;
+  font-size: 18px;
+  border-radius: 0;
+  margin: 0;
+}
+
+/* 动画样式 */
+.mobile-menu-fade-enter-active,
+.mobile-menu-fade-leave-active {
+  transition: opacity 0.25s, transform 0.25s;
+}
+.mobile-menu-fade-enter-from,
+.mobile-menu-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-16px);
+}
+.mobile-menu-fade-enter-to,
+.mobile-menu-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 响应式：小于550px时调整布局 */
+@media (max-width: 550px) {
+  .header-menu {
+    display: none;
+  }
+  .menu-toggle {
+    display: flex;
+  }
+  .header-left {
+    margin-right: 0;
+  }
+  .header-right {
+    margin-left: auto;
+  }
 }
 </style>

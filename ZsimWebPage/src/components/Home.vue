@@ -10,7 +10,7 @@ function handleDownload() {
   <div class="homepage">
     <div class="header">
       <div class="logo"></div>
-      <h1>ZSim 模拟器</h1>
+      <p class="title">ZSim 模拟器</p>
       <p class="description">ZSim 是一个独立的绝区零自动模拟器，我们实现了模拟绝区零的战斗，并支持全脚本化的出招。</p>
     </div>
 
@@ -120,6 +120,13 @@ function handleDownload() {
 
 .link-item:active {
   transform: scale(0.95);
+}
+
+.title {
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: var(--vt-c-text-light-1);
+  margin: 0.5rem 0;
 }
 
 .description {
