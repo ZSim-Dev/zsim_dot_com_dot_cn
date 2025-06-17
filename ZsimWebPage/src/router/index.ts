@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../components/Home.vue';
-import DocsView from '../components/DocsView.vue'; // 文档视图
+import DocsView from '../components/DocsView.vue';
+import LoginView from '../components/LoginView.vue';
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/docs',
     name: 'DocsView',
     component: DocsView
+  },
+  {
+    path: '/login',
+    name: 'LoginView',
+    component: LoginView
   },
   // 其他路由...
 ];

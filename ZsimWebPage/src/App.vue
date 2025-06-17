@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -25,6 +25,43 @@ function goTo(url: string) {
   }
   menuOpen.value = false
 }
+
+// 登录状态管理
+const user = ref<string | null>(null)
+const token = ref<string | null>(null)
+const API_BASE = 'http://127.0.0.1:8000'
+
+function logout() {
+  user.value = null
+  token.value = null
+  localStorage.removeItem('user')
+  localStorage.removeItem('token')
+}
+
+async function fetchUser() {
+  if (!token.value) return
+  const res = await fetch(`${API_BASE}/api/me`, {
+    headers: { Authorization: `Bearer ${token.value}` }
+  })
+  if (res.ok) {
+    const data = await res.json()
+    user.value = data.username
+    localStorage.setItem('user', user.value)
+  } else {
+    user.value = null
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
+    token.value = null
+  }
+}
+
+onMounted(() => {
+  const t = localStorage.getItem('token')
+  if (t) {
+    token.value = t
+    fetchUser()
+  }
+})
 </script>
 
 <template>
@@ -54,6 +91,13 @@ function goTo(url: string) {
           <path d="M511.6 76.3C264.6 76.3 64 277.5 64 525.2c0 198.1 128.5 366.2 306.7 425.8 22.4 4.1 30.6-9.7 30.6-21.5 0-10.6-0.4-45.5-0.6-82.5-124.8 27.1-151.2-60.2-151.2-60.2-20.4-51.8-49.8-65.6-49.8-65.6-40.7-27.8 3.1-27.2 3.1-27.2 45 3.2 68.7 46.2 68.7 46.2 40 68.6 104.9 48.8 130.5 37.3 4.1-29 15.7-48.8 28.6-60-99.7-11.3-204.5-49.8-204.5-221.8 0-49 17.5-89 46.2-120.4-4.6-11.3-20-56.8 4.4-118.5 0 0 37.6-12.1 123.2 46.1 35.7-9.9 74-14.8 112.1-15 38 0.2 76.4 5.1 112.1 15 85.5-58.2 123.1-46.1 123.1-46.1 24.5 61.7 9.1 107.2 4.5 118.5 28.8 31.4 46.1 71.4 46.1 120.4 0 172.4-104.9 210.4-204.9 221.5 16.1 13.9 30.4 41.3 30.4 83.3 0 60.2-0.5 108.7-0.5 123.5 0 11.9 8 25.8 30.7 21.4C831.6 891.2 960 723.2 960 525.2c0-247.7-200.6-448.9-448.4-448.9z" fill="#181616"/>
         </svg>
       </button>
+      <template v-if="user">
+        <span class="user-info">你好，{{ user }}</span>
+        <button class="login-btn" @click="logout">登出</button>
+      </template>
+      <template v-else>
+        <button class="login-btn" @click="router.push('/login')">登录</button>
+      </template>
     </div>
     <!-- 弹出菜单，小屏显示，添加 transition 动画 -->
     <transition name="mobile-menu-fade">
@@ -137,6 +181,34 @@ function goTo(url: string) {
   display: flex;
   align-items: center;
   margin-left: auto;
+  gap: 8px;
+}
+.user-info {
+  margin: 0 8px;
+  color: #333;
+  font-size: 15px;
+}
+.login-btn {
+  background: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 16px;
+  margin-left: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+.login-btn.cancel {
+  background: #aaa;
+  color: #fff;
+}
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.login-btn:hover:not(:disabled) {
+  background: #1a2533;
 }
 .github-btn {
   background: none;
