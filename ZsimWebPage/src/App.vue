@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { API_BASE } from './config'
 
 const router = useRouter()
 const menuOpen = ref(false)
@@ -29,7 +30,6 @@ function goTo(url: string) {
 // 登录状态管理
 const user = ref<string | null>(null)
 const token = ref<string | null>(null)
-const API_BASE = 'http://127.0.0.1:8000'
 
 function logout() {
   user.value = null

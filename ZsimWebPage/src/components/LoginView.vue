@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { API_BASE } from '../config'
 
 const router = useRouter()
 const username = ref('')
@@ -9,8 +10,6 @@ const loading = ref(false)
 const loginError = ref('')
 const registerError = ref('')
 const mode = ref<'login' | 'register'>('login')
-
-const API_BASE = 'http://127.0.0.1:8000'
 
 async function handleLogin() {
   loading.value = true

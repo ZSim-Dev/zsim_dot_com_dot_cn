@@ -49,6 +49,7 @@ function generateTOC(mdText: string) {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  /* 没有 align-items: center，内容自然靠上 */
 }
 
 .sidebar {
