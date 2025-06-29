@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { API_BASE } from './config'
 
 const router = useRouter()
 const menuOpen = ref(false)
@@ -41,7 +40,7 @@ function logout() {
 
 async function fetchUser() {
   if (!token.value) return
-  const res = await fetch(`${API_BASE}/api/me`, {
+  const res = await fetch(`/api/me`, {
     headers: { Authorization: `Bearer ${token.value}` }
   })
   if (res.ok) {
@@ -107,7 +106,9 @@ onMounted(() => {
     </transition>
   </header>
   <div class="main-content">
-    <router-view />
+    <transition name="fade-page" mode="out-in">
+      <router-view />
+    </transition>
   </div>
 </template>
 
@@ -300,6 +301,23 @@ onMounted(() => {
 
 .mobile-menu-fade-enter-to,
 .mobile-menu-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-page-enter-active,
+.fade-page-leave-active {
+  transition: opacity 0.4s cubic-bezier(.4, 0, .2, 1), transform 0.4s cubic-bezier(.4, 0, .2, 1);
+}
+
+.fade-page-enter-from,
+.fade-page-leave-to {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.fade-page-enter-to,
+.fade-page-leave-from {
   opacity: 1;
   transform: translateY(0);
 }

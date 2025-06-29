@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../components/Home.vue';
 import DocsView from '../components/DocsView.vue';
 import LoginView from '../components/LoginView.vue';
+import VoteView from '../components/VoteView.vue';
 
 const routes = [
   {
@@ -19,7 +20,11 @@ const routes = [
     name: 'LoginView',
     component: LoginView
   },
-  // 其他路由...
+  {
+    path: '/vote',
+    name: 'VoteView',
+    component: VoteView
+  },
 ];
 
 const router = createRouter({

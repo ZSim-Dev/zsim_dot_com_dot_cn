@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 DB_PATH = "./.database/users.db"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
-fake_tokens = {}
+fake_tokens: dict[str, str] = {}
 
 
 class UserCreate(BaseModel):
@@ -32,6 +32,7 @@ def hash_password(password: str) -> str:
 
 async def register_user(user: UserCreate):
     async with aiosqlite.connect(DB_PATH) as conn:
+        conn.row_factory = aiosqlite.Row
         try:
             await conn.execute(
                 "INSERT INTO users (username, password) VALUES (?, ?)",
@@ -43,8 +44,9 @@ async def register_user(user: UserCreate):
     return {"msg": "注册成功"}
 
 
-async def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_user(form_data: OAuth2PasswordRequestForm):
     async with aiosqlite.connect(DB_PATH) as conn:
+        conn.row_factory = aiosqlite.Row
         async with conn.execute(
             "SELECT * FROM users WHERE username=? AND password=?",
             (form_data.username, hash_password(form_data.password)),

@@ -26,10 +26,17 @@ function handleDownload() {
 
 <style scoped>
 .homepage {
+  padding: 0 2rem;
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   animation: fadeInPage 0.5s ease-in-out;
+  /* 添加垂直居中布局 */
+  min-height: calc(100vh - 120px); /* 减去header高度 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes fadeInPage {

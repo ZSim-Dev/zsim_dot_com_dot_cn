@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { API_BASE } from '../config'
 
 const router = useRouter()
 const username = ref('')
@@ -15,7 +14,7 @@ async function handleLogin() {
   loading.value = true
   loginError.value = ''
   try {
-    const res = await fetch(`${API_BASE}/api/login`, {
+    const res = await fetch(`/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
@@ -31,7 +30,7 @@ async function handleLogin() {
     }
     localStorage.setItem('token', data.access_token)
     // 获取用户信息
-    const meRes = await fetch(`${API_BASE}/api/me`, {
+    const meRes = await fetch(`/api/me`, {
       headers: { Authorization: `Bearer ${data.access_token}` }
     })
     if (meRes.ok) {
@@ -40,7 +39,7 @@ async function handleLogin() {
     }
     window.location.replace('/') // 登录成功后刷新首页
   } catch (e) {
-    loginError.value = '网络错误'
+    loginError.value = '网络连接断开或服务离线'
   } finally {
     loading.value = false
   }
@@ -50,7 +49,7 @@ async function handleRegister() {
   loading.value = true
   registerError.value = ''
   try {
-    const res = await fetch(`${API_BASE}/api/register`, {
+    const res = await fetch(`/api/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -82,20 +81,22 @@ function switchMode() {
 
 <template>
   <div class="login-page">
-    <div class="login-box">
-      <h2>{{ mode === 'login' ? '用户登录' : '用户注册' }}</h2>
-      <input v-model="username" class="login-input" type="text" placeholder="用户名" autocomplete="username" />
-      <input v-model="password" class="login-input" type="password" placeholder="密码" autocomplete="current-password"
-        @keyup.enter="mode === 'login' ? handleLogin() : handleRegister()" />
-      <button class="login-btn" :disabled="loading" @click="mode === 'login' ? handleLogin() : handleRegister()">
-        {{ loading ? (mode === 'login' ? '登录中...' : '注册中...') : (mode === 'login' ? '登录' : '注册') }}
-      </button>
-      <button class="switch-btn" @click="switchMode" :disabled="loading">
-        {{ mode === 'login' ? '没有账号？注册' : '已有账号？登录' }}
-      </button>
-      <div v-if="mode === 'login' && loginError" class="login-error">{{ loginError }}</div>
-      <div v-if="mode === 'register' && registerError" class="login-error">{{ registerError }}</div>
-    </div>
+    <transition name="fade-login">
+      <div class="login-box">
+        <h2>{{ mode === 'login' ? '用户登录' : '用户注册' }}</h2>
+        <input v-model="username" class="login-input" type="text" placeholder="用户名" autocomplete="username" />
+        <input v-model="password" class="login-input" type="password" placeholder="密码" autocomplete="current-password"
+          @keyup.enter="mode === 'login' ? handleLogin() : handleRegister()" />
+        <button class="login-btn" :disabled="loading" @click="mode === 'login' ? handleLogin() : handleRegister()">
+          {{ loading ? (mode === 'login' ? '登录中...' : '注册中...') : (mode === 'login' ? '登录' : '注册') }}
+        </button>
+        <button class="switch-btn" @click="switchMode" :disabled="loading">
+          {{ mode === 'login' ? '没有账号？注册' : '已有账号？登录' }}
+        </button>
+        <div v-if="mode === 'login' && loginError" class="login-error">{{ loginError }}</div>
+        <div v-if="mode === 'register' && registerError" class="login-error">{{ registerError }}</div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -184,5 +185,22 @@ function switchMode() {
   margin-top: 10px;
   text-align: center;
   font-size: 14px;
+}
+
+.fade-login-enter-active,
+.fade-login-leave-active {
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.fade-login-enter-from,
+.fade-login-leave-to {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.fade-login-enter-to,
+.fade-login-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
