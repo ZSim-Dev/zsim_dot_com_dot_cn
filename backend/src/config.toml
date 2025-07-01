@@ -1,0 +1,5 @@
+[aliyun]
+access_key_id = "LTAI5tMTaeKQdc9VSwDNv7H9"
+access_key_secret = "ws8EnP09yptGRD2rwcorXnDKoXCFEh"
+sign_name = "验证码短信"
+template_code = "SMS_321855554"

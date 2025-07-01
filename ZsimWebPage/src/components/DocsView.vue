@@ -1,8 +1,8 @@
 <template>
-  <div class="docs-container">
+  <div class="docs-container" :class="{ 'dark-mode': isDarkMode }">
     <!-- 左侧导航栏 -->
     <aside class="sidebar">
-      <nav class="toc-nav">
+      <nav class="toc-nav" :class="{ 'dark-mode': isDarkMode }">
         <h3 class="toc-title">目录</h3>
         <div class="toc-content" v-html="tocHtml"></div>
       </nav>
@@ -15,16 +15,20 @@
         <p class="subtitle">了解如何使用 ZSim 模拟器的详细指南</p>
       </div>
 
-      <article class="markdown-container" v-html="renderedMarkdown"></article>
+      <article class="markdown-container" :class="{ 'dark-mode': isDarkMode }" v-html="renderedMarkdown"></article>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, inject, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
+import 'highlight.js/styles/github-dark.css'
+
+// 注入深色模式状态（如果父组件提供）
+const isDarkMode = inject('isDarkMode', ref(false))
 
 const mdContent = ref('')
 const renderedMarkdown = ref('')
@@ -118,9 +122,32 @@ function handleTocClick(): void {
   })
 }
 
+/**
+ * 动态切换代码高亮主题
+ */
+function updateCodeTheme(): void {
+  const existingLink = document.querySelector('link[data-hljs-theme]')
+  if (existingLink) {
+    existingLink.remove()
+  }
+  
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.setAttribute('data-hljs-theme', 'true')
+  link.href = isDarkMode.value 
+    ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
+    : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css'
+  document.head.appendChild(link)
+}
+
+// 监听深色模式变化
+watch(isDarkMode, () => {
+  updateCodeTheme()
+}, { immediate: true })
+
 onMounted(async () => {
   try {
-    const res = await fetch('/src/docs/docs.md')
+    const res = await fetch('/docs/docs.md')
     const text = await res.text()
     mdContent.value = text
 
@@ -133,6 +160,9 @@ onMounted(async () => {
 
     // 处理目录点击
     handleTocClick()
+    
+    // 初始化代码主题
+    updateCodeTheme()
   } catch (error) {
     console.error('加载文档失败:', error)
     renderedMarkdown.value = '<p>文档加载失败，请稍后重试。</p>'
@@ -150,6 +180,15 @@ onMounted(async () => {
   min-height: calc(100vh - 120px);
 }
 
+.docs-container h1{
+  flex: 1;
+  color: var(--color-heading);
+}
+
+.docs-container p{
+  color: var(--color-text);
+}
+
 /* 侧边栏样式 */
 .sidebar {
   width: 280px;
@@ -163,18 +202,27 @@ onMounted(async () => {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(229, 231, 235, 0.8);
+  border: 1px solid var(--color-border);
   max-height: calc(100vh - 140px);
   overflow-y: auto;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .toc-nav {
+    background: rgba(40, 40, 40, 0.95);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  }
 }
 
 .toc-title {
   margin: 0 0 1rem 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #374151;
-  border-bottom: 2px solid #e5e7eb;
+  color: var(--color-heading);
+  border-bottom: 2px solid var(--color-border);
   padding-bottom: 0.5rem;
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 .toc-content {
@@ -185,18 +233,26 @@ onMounted(async () => {
 .toc-link {
   display: block;
   padding: 0.5rem 0;
-  color: #6b7280;
+  color: var(--color-text);
   text-decoration: none;
   border-radius: 6px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   font-size: 0.9rem;
   line-height: 1.4;
+  opacity: 0.8;
 }
 
 .toc-link:hover {
   color: #3b82f6;
   background-color: rgba(59, 130, 246, 0.1);
   padding-left: 0.5rem;
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .toc-link:hover {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
 }
 
 .toc-level-1 {
@@ -212,7 +268,7 @@ onMounted(async () => {
 .toc-level-3 {
   padding-left: 2rem;
   font-size: 0.8rem;
-  color: #9ca3af;
+  opacity: 0.6;
 }
 
 .toc-level-4,
@@ -220,7 +276,7 @@ onMounted(async () => {
 .toc-level-6 {
   padding-left: 3rem;
   font-size: 0.75rem;
-  color: #9ca3af;
+  opacity: 0.6;
 }
 
 /* 主内容区域 */
@@ -233,20 +289,23 @@ onMounted(async () => {
   text-align: center;
   margin-bottom: 3rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
+  transition: border-color 0.3s ease;
 }
 
 .content-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-heading);
   margin: 0 0 1rem 0;
 }
 
 .subtitle {
   font-size: 1.1rem;
-  color: #6b7280;
+  color: var(--color-text);
   margin: 0;
+  opacity: 0.8;
+  transition: color 0.3s ease;
 }
 
 /* Markdown 内容样式 */
@@ -255,8 +314,16 @@ onMounted(async () => {
   border-radius: 12px;
   padding: 2.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(229, 231, 235, 0.8);
+  border: 1px solid var(--color-border);
   line-height: 1.7;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .markdown-container {
+    background: rgba(40, 40, 40, 0.95);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  }
 }
 
 /* 深度选择器用于样式化渲染的markdown内容 */
@@ -275,33 +342,39 @@ onMounted(async () => {
 
 .markdown-container :deep(h1) {
   font-size: 2rem;
-  color: #111827;
-  border-bottom: 2px solid #e5e7eb;
+  color: var(--color-heading);
+  border-bottom: 2px solid var(--color-border);
   padding-bottom: 0.5rem;
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 .markdown-container :deep(h2) {
   font-size: 1.5rem;
-  color: #374151;
+  color: var(--color-heading);
+  transition: color 0.3s ease;
 }
 
 .markdown-container :deep(h3) {
   font-size: 1.25rem;
-  color: #4b5563;
+  color: var(--color-heading);
+  opacity: 0.9;
+  transition: color 0.3s ease;
 }
 
 .markdown-container :deep(p) {
   margin-bottom: 1rem;
-  color: #374151;
+  color: var(--color-text);
+  transition: color 0.3s ease;
 }
 
 .markdown-container :deep(pre) {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1.5rem;
   overflow-x: auto;
   margin: 1.5rem 0;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .markdown-container :deep(code) {
@@ -310,10 +383,36 @@ onMounted(async () => {
 }
 
 .markdown-container :deep(p code) {
-  background: #f1f5f9;
+  background: var(--color-background-mute);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   color: #e11d48;
+  transition: background-color 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .markdown-container :deep(p code) {
+    color: #fca5a5;
+  }
+}
+
+/* 深色模式样式覆盖 */
+.dark-mode .toc-nav {
+  background: rgba(40, 40, 40, 0.95) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .markdown-container {
+  background: rgba(40, 40, 40, 0.95) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .toc-link:hover {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+.dark-mode .markdown-container :deep(p code) {
+  color: #fca5a5 !important;
 }
 
 .markdown-container :deep(ul),
@@ -328,10 +427,11 @@ onMounted(async () => {
 
 .markdown-container :deep(blockquote) {
   border-left: 4px solid #3b82f6;
-  background: #f8fafc;
+  background: var(--color-background-soft);
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
   border-radius: 0 8px 8px 0;
+  transition: background-color 0.3s ease;
 }
 
 .markdown-container :deep(table) {
@@ -342,14 +442,16 @@ onMounted(async () => {
 
 .markdown-container :deep(th),
 .markdown-container :deep(td) {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   padding: 0.75rem;
   text-align: left;
+  transition: border-color 0.3s ease;
 }
 
 .markdown-container :deep(th) {
-  background: #f9fafb;
+  background: var(--color-background-soft);
   font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 /* 响应式设计 */

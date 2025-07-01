@@ -7,7 +7,7 @@ const menuOpen = ref(false)
 
 const menuItems = [
   { label: '主页', action: () => goHome() },
-  { label: '下载', action: () => goTo('/download') },
+  { label: '下载', action: () => goTo('https://github.com/zhiqiang0/ZSimulator/releases') },
   { label: '文档', action: () => goTo('/docs') },
   { label: '投票', action: () => goTo('/vote') }
 ]
@@ -61,6 +61,7 @@ onMounted(() => {
     token.value = t
     fetchUser()
   }
+
 })
 </script>
 
@@ -73,7 +74,7 @@ onMounted(() => {
       <span class="bar"></span>
     </button>
     <div class="header-left" @click="goHome" style="cursor:pointer;">
-      <img src="./assets/logo.svg" alt="logo" class="logo" />
+      <img src="/assets/zsim-logo.svg" alt="logo" class="logo" />
       <span class="zsim-title">ZSim 模拟器</span>
     </div>
     <!-- 普通菜单，大屏显示 -->
@@ -86,7 +87,7 @@ onMounted(() => {
         <svg t="1717920000000" class="github-icon" viewBox="0 0 1024 1024" width="24" height="24">
           <path
             d="M511.6 76.3C264.6 76.3 64 277.5 64 525.2c0 198.1 128.5 366.2 306.7 425.8 22.4 4.1 30.6-9.7 30.6-21.5 0-10.6-0.4-45.5-0.6-82.5-124.8 27.1-151.2-60.2-151.2-60.2-20.4-51.8-49.8-65.6-49.8-65.6-40.7-27.8 3.1-27.2 3.1-27.2 45 3.2 68.7 46.2 68.7 46.2 40 68.6 104.9 48.8 130.5 37.3 4.1-29 15.7-48.8 28.6-60-99.7-11.3-204.5-49.8-204.5-221.8 0-49 17.5-89 46.2-120.4-4.6-11.3-20-56.8 4.4-118.5 0 0 37.6-12.1 123.2 46.1 35.7-9.9 74-14.8 112.1-15 38 0.2 76.4 5.1 112.1 15 85.5-58.2 123.1-46.1 123.1-46.1 24.5 61.7 9.1 107.2 4.5 118.5 28.8 31.4 46.1 71.4 46.1 120.4 0 172.4-104.9 210.4-204.9 221.5 16.1 13.9 30.4 41.3 30.4 83.3 0 60.2-0.5 108.7-0.5 123.5 0 11.9 8 25.8 30.7 21.4C831.6 891.2 960 723.2 960 525.2c0-247.7-200.6-448.9-448.4-448.9z"
-            fill="#181616" />
+            fill="currentColor" />
         </svg>
       </button>
       <template v-if="user">
@@ -113,16 +114,43 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* CSS 变量定义 */
+:root {
+  --header-bg: #fff;
+  --header-border: #eee;
+  --header-shadow: rgba(0, 0, 0, 0.03);
+  --text-primary: #222;
+  --text-secondary: #333;
+  --hover-bg: #f5f5f5;
+  --button-bg: #2c3e50;
+  --button-hover: #1a2533;
+  --github-fill: #181616;
+}
+
+/* 深色模式变量 */
+.dark-mode {
+  --header-bg: #1a1a1a;
+  --header-border: #333;
+  --header-shadow: rgba(0, 0, 0, 0.2);
+  --text-primary: #e0e0e0;
+  --text-secondary: #d0d0d0;
+  --hover-bg: #2a2a2a;
+  --button-bg: #4a5568;
+  --button-hover: #2d3748;
+  --github-fill: #e0e0e0;
+}
+
 .zsim-header {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   height: 56px;
   padding: 0 16px;
-  background: #fff;
-  border-bottom: 1px solid #eee;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+  box-shadow: 0 2px 8px var(--header-shadow);
   position: relative;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .fixed-header {
@@ -153,8 +181,9 @@ onMounted(() => {
 .zsim-title {
   font-size: 22px;
   font-weight: 600;
-  color: #222;
+  color: var(--text-primary);
   letter-spacing: 1px;
+  transition: color 0.3s ease;
 }
 
 .header-menu {
@@ -168,11 +197,11 @@ onMounted(() => {
   background: none;
   border: none;
   font-size: 16px;
-  color: #333;
+  color: var(--text-secondary);
   cursor: pointer;
   padding: 6px 12px;
   border-radius: 4px;
-  transition: background 0.2s;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .menu-btn+.menu-btn {
@@ -180,7 +209,7 @@ onMounted(() => {
 }
 
 .menu-btn:hover {
-  background: #f5f5f5;
+  background: var(--hover-bg);
 }
 
 .header-right {
@@ -192,12 +221,13 @@ onMounted(() => {
 
 .user-info {
   margin: 0 8px;
-  color: #333;
+  color: var(--text-secondary);
   font-size: 15px;
+  transition: color 0.3s ease;
 }
 
 .login-btn {
-  background: #2c3e50;
+  background: var(--button-bg);
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -205,7 +235,7 @@ onMounted(() => {
   margin-left: 4px;
   cursor: pointer;
   font-size: 15px;
-  transition: background 0.2s;
+  transition: background 0.3s ease;
 }
 
 .login-btn.cancel {
@@ -219,7 +249,7 @@ onMounted(() => {
 }
 
 .login-btn:hover:not(:disabled) {
-  background: #1a2533;
+  background: var(--button-hover);
 }
 
 .github-btn {
@@ -228,15 +258,45 @@ onMounted(() => {
   cursor: pointer;
   padding: 4px;
   border-radius: 50%;
-  transition: background 0.2s;
+  transition: background 0.3s ease;
+  color: var(--github-fill);
 }
 
 .github-btn:hover {
-  background: #f5f5f5;
+  background: var(--hover-bg);
 }
 
 .github-icon {
   display: block;
+}
+
+/* 主题切换按钮样式 */
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.3s ease, transform 0.2s ease;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--hover-bg);
+  transform: scale(1.1);
+}
+
+.theme-icon {
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:active .theme-icon {
+  transform: rotate(180deg);
 }
 
 /* 汉堡按钮样式 */
@@ -257,10 +317,10 @@ onMounted(() => {
 .menu-toggle .bar {
   width: 22px;
   height: 2px;
-  background: #333;
+  background: var(--text-secondary);
   margin: 3px 0;
   border-radius: 2px;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 /* 移动端弹出菜单 */
@@ -269,13 +329,15 @@ onMounted(() => {
   top: 56px;
   left: 0;
   width: 100vw;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: var(--header-bg);
+  box-shadow: 0 2px 8px var(--header-shadow);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: 12px 0;
   z-index: 120;
+  border-bottom: 1px solid var(--header-border);
+  transition: background-color 0.3s ease;
 }
 
 .mobile-menu .menu-btn {

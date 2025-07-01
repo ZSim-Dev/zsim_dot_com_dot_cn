@@ -9,7 +9,9 @@ function handleDownload() {
 <template>
   <div class="homepage">
     <div class="header">
-      <div class="logo"></div>
+      <div class="logo">
+        <img src="/assets/zsim-logo.svg" alt="logo" class="logo" />
+      </div>
       <p class="title">ZSim 模拟器</p>
       <p class="description">ZSim 是一个独立的绝区零自动模拟器，我们实现了模拟绝区零的战斗，并支持全脚本化的出招。</p>
     </div>
@@ -26,28 +28,31 @@ function handleDownload() {
 
 <style scoped>
 .homepage {
-  padding: 0 2rem;
+  padding: 2rem;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
-  animation: fadeInPage 0.5s ease-in-out;
-  /* 添加垂直居中布局 */
-  min-height: calc(100vh - 120px); /* 减去header高度 */
+  animation: fadeInPage 0.8s ease-out;
+  min-height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes fadeInPage {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-30px) scale(0.95);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -56,91 +61,209 @@ function handleDownload() {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  gap: 2rem;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .logo {
-  width: 120px;
-  height: 120px;
-  background: #f0f0f0;
-  border-radius: 24px;
-  margin: 0 auto 1rem;
-  animation: pulseLogo 2s infinite ease-in-out alternate;
+  width: 140px;
+  height: 140px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 28px;
+  margin: 0 auto 1.5rem;
+  animation: floatLogo 3s ease-in-out infinite;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
-@keyframes pulseLogo {
-  from {
-    transform: scale(1);
+.logo::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes floatLogo {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
   }
 
-  to {
-    transform: scale(1.05);
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+
+  100% {
+    transform: translateX(100%) rotate(45deg);
   }
 }
 
 .download-btn {
-  padding: 12px 60px;
-  font-size: 1.2rem;
-  background: var(--vt-c-indigo);
-  color: whitesmoke;
+  padding: 16px 48px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 50px;
   cursor: pointer;
-  transition: opacity 0.3s, transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0 auto;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.download-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
 }
 
 .download-btn:hover {
-  opacity: 0.85;
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+}
+
+.download-btn:hover::before {
+  left: 100%;
 }
 
 .download-btn:active {
-  transform: scale(0.95);
+  transform: translateY(-1px) scale(0.98);
 }
 
 .links {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .link-item {
   color: var(--vt-c-text-light-1);
   text-decoration: none;
-  padding: 8px 16px;
-  border: 1px solid var(--color-border);
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  border-radius: 6px;
-  transition: background-color 0.3s, transform 0.3s ease;
+  border-radius: 25px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+  position: relative;
+  overflow: hidden;
+}
+
+.link-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+  transition: width 0.3s ease;
+  z-index: -1;
 }
 
 .link-item:hover {
-  background-color: var(--color-border-hover);
   transform: translateY(-2px);
+  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.link-item:hover::before {
+  width: 100%;
 }
 
 .link-item:active {
-  transform: scale(0.95);
+  transform: translateY(0) scale(0.95);
 }
 
 .title {
-  font-size: 2.6rem;
-  font-weight: 600;
-  color: var(--vt-c-text-light-1);
-  margin: 0.5rem 0;
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 1rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.02em;
 }
 
 .description {
-  font-size: 1.1rem;
-  color: var(--vt-c-text-light-2);
+  font-size: 1.2rem;
+  color: var(--color-description);
   margin-top: 1rem;
+  line-height: 1.6;
+  max-width: 600px;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .homepage {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .download-btn {
+    padding: 14px 36px;
+    font-size: 1.1rem;
+  }
+
+  .links {
+    gap: 1rem;
+  }
+
+  .link-item {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
 }
 </style>
