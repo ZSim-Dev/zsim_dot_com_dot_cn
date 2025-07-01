@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-# This file is auto-generated, don't edit it. Thanks.
+import json
 import logging
-import os
-import sys
 from typing import List
 
 import tomllib
@@ -33,7 +30,6 @@ class AliyunSMS:
         @return: Client
         @throws Exception
         """
-        # 工程代码建议使用更安全的无AK方式，凭据配置方式请参见：https://help.aliyun.com/document_detail/378659.html。
         ak_config = Config(
             type="access_key",
             access_key_id=ACCESS_KEY_ID,
@@ -49,6 +45,7 @@ class AliyunSMS:
     async def send_sms_async(
         args: List[str],
     ) -> None:
+        """发送短信（通用方法）"""
         client = AliyunSMS.create_client()
         send_sms_request = dysmsapi_20170525_models.SendSmsRequest(
             phone_numbers="your_value", sign_name="your_value"
@@ -60,3 +57,42 @@ class AliyunSMS:
             )
         except Exception as error:
             logging.error(error)
+            raise
+
+    @staticmethod
+    async def send_verification_code(phone: str, code: str) -> None:
+        """发送验证码短信
+
+        Args:
+            phone: 手机号
+            code: 验证码
+
+        Raises:
+            Exception: 发送失败时抛出异常
+        """
+        client = AliyunSMS.create_client()
+
+        # 构建模板参数
+        template_param = json.dumps({"code": code})
+
+        send_sms_request = dysmsapi_20170525_models.SendSmsRequest(
+            phone_numbers=phone,
+            sign_name=SIGN_NAME,
+            template_code=TEMPLATE_CODE,
+            template_param=template_param,
+        )
+
+        try:
+            response = await client.send_sms_with_options_async(
+                send_sms_request, util_models.RuntimeOptions()
+            )
+
+            # 检查发送结果
+            if response.body.code != "OK":
+                raise Exception(f"短信发送失败: {response.body.message}")
+
+            logging.info(f"验证码发送成功，手机号: {phone}")
+
+        except Exception as error:
+            logging.error(f"验证码发送失败，手机号: {phone}, 错误: {error}")
+            raise

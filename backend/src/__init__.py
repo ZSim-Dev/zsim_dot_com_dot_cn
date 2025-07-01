@@ -5,11 +5,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 
 from .auth import (
+    PhoneLoginRequest,
+    SendCodeRequest,
     UserCreate,
     get_current_user,
     init_db as init_auth_db,
     login_user,
+    login_with_phone,
     register_user,
+    send_verification_code,
 )
 from .vote import init_vote_db
 from .vote import router as vote_router
@@ -24,9 +28,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 async def init_databases():
     await init_auth_db()
     await init_vote_db()
+
 
 asyncio.run(init_databases())
 
@@ -41,6 +47,18 @@ async def register(user: UserCreate):
 @app.post("/api/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return await login_user(form_data)
+
+
+@app.post("/api/send-code")
+async def send_code(request: SendCodeRequest):
+    """发送验证码"""
+    return await send_verification_code(request)
+
+
+@app.post("/api/login-phone")
+async def login_phone(request: PhoneLoginRequest):
+    """手机号验证码登录"""
+    return await login_with_phone(request)
 
 
 @app.get("/api/me")
