@@ -130,11 +130,11 @@ function updateCodeTheme(): void {
   if (existingLink) {
     existingLink.remove()
   }
-  
+
   const link = document.createElement('link')
   link.rel = 'stylesheet'
   link.setAttribute('data-hljs-theme', 'true')
-  link.href = isDarkMode.value 
+  link.href = isDarkMode.value
     ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
     : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css'
   document.head.appendChild(link)
@@ -147,7 +147,7 @@ watch(isDarkMode, () => {
 
 onMounted(async () => {
   try {
-    const res = await fetch('/docs/docs.md')
+    const res = await fetch('/docs/doc.md')
     const text = await res.text()
     mdContent.value = text
 
@@ -160,7 +160,7 @@ onMounted(async () => {
 
     // 处理目录点击
     handleTocClick()
-    
+
     // 初始化代码主题
     updateCodeTheme()
   } catch (error) {
@@ -180,12 +180,12 @@ onMounted(async () => {
   min-height: calc(100vh - 120px);
 }
 
-.docs-container h1{
+.docs-container h1 {
   flex: 1;
   color: var(--color-heading);
 }
 
-.docs-container p{
+.docs-container p {
   color: var(--color-text);
 }
 

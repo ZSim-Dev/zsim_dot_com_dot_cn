@@ -86,6 +86,7 @@ class AliyunSMS:
             response = await client.send_sms_with_options_async(
                 send_sms_request, util_models.RuntimeOptions()
             )
+            logging.info(f"发送短信响应: {response}")
 
             # 检查发送结果
             if response.body.code != "OK":

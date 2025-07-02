@@ -11,12 +11,13 @@ from pydantic import BaseModel, Field
 DB_PATH = "./.database/users.db"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 fake_tokens: dict[str, str] = {}
-# 验证码存储 {phone: {code: str, expire_time: float}}
+# 验证码存储 {phone: {code: str, expire_time: float, last_send_time: float}}
 verification_codes: dict[str, dict[str, str | float]] = {}
 
 
 class UserCreate(BaseModel):
     """用户注册模型"""
+
     username: str = Field(
         ...,
         description="用户名",
@@ -113,9 +114,11 @@ def is_code_valid(phone: str, code: str) -> bool:
 
 def store_verification_code(phone: str, code: str) -> None:
     """存储验证码"""
+    current_time = time.time()
     verification_codes[phone] = {
         "code": code,
-        "expire_time": time.time() + 300,  # 5分钟有效期
+        "expire_time": current_time + 300,  # 5分钟有效期
+        "last_send_time": current_time,  # 记录发送时间
     }
 
 
@@ -124,15 +127,15 @@ async def register_user(user: UserCreate) -> dict[str, str]:
     # 验证密码确认
     if user.password != user.confirm_password:
         raise HTTPException(status_code=400, detail="密码和确认密码不匹配")
-    
+
     # 验证验证码
     if not is_code_valid(user.phone, user.code):
         raise HTTPException(status_code=401, detail="验证码无效或已过期")
-    
+
     # 清除已使用的验证码
     if user.phone in verification_codes:
         del verification_codes[user.phone]
-    
+
     async with aiosqlite.connect(DB_PATH) as conn:
         conn.row_factory = aiosqlite.Row
         try:
@@ -148,7 +151,9 @@ async def register_user(user: UserCreate) -> dict[str, str]:
             elif "phone" in error_msg:
                 raise HTTPException(status_code=400, detail="手机号已被注册")
             else:
-                raise HTTPException(status_code=400, detail="注册失败，用户名或手机号已存在")
+                raise HTTPException(
+                    status_code=400, detail="注册失败，用户名或手机号已存在"
+                )
     return {"msg": "注册成功"}
 
 
@@ -170,6 +175,18 @@ async def login_user(form_data: OAuth2PasswordRequestForm):
 async def send_verification_code(request: SendCodeRequest) -> dict[str, str]:
     """发送验证码"""
     from .aliyun_sms import AliyunSMS
+
+    current_time = time.time()
+
+    # 检查发送频率限制（每分钟只能发送一次）
+    if request.phone in verification_codes:
+        last_send_time = verification_codes[request.phone].get("last_send_time", 0)
+        if current_time - last_send_time < 60:  # 60秒内不能重复发送
+            remaining_time = int(60 - (current_time - last_send_time))
+            raise HTTPException(
+                status_code=429,
+                detail=f"发送过于频繁，请等待 {remaining_time} 秒后再试",
+            )
 
     # 生成验证码
     code = generate_verification_code()
