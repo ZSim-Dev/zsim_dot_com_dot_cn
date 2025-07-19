@@ -21,11 +21,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, inject, watch } from 'vue'
-import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
-import 'highlight.js/styles/github.css'
 import 'highlight.js/styles/github-dark.css'
+import 'highlight.js/styles/github.css'
+import MarkdownIt from 'markdown-it'
+import { inject, nextTick, onMounted, ref, watch } from 'vue'
 
 // 注入深色模式状态（如果父组件提供）
 const isDarkMode = inject('isDarkMode', ref(false))
@@ -368,7 +368,7 @@ onMounted(async () => {
 }
 
 .markdown-container :deep(pre) {
-  background: var(--color-background-soft);
+  background: var(--color-background-mute);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1.5rem;
@@ -388,6 +388,36 @@ onMounted(async () => {
   border-radius: 4px;
   color: #e11d48;
   transition: background-color 0.3s ease;
+}
+
+.markdown-container :deep(pre code) {
+  color: var(--color-text);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .markdown-container :deep(pre) {
+    background: var(--vt-c-black);
+    border-color: var(--color-border);
+  }
+
+  .markdown-container :deep(pre code) {
+    color: var(--color-text);
+  }
+
+  .markdown-container :deep(p code) {
+    background: var(--vt-c-black-soft);
+    color: #fca5a5;
+  }
+}
+
+.markdown-container :deep(strong),
+.markdown-container :deep(b) {
+  font-weight: 700;
+  color: var(--color-heading);
+  transition: color 0.3s ease;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -413,6 +443,11 @@ onMounted(async () => {
 
 .dark-mode .markdown-container :deep(p code) {
   color: #fca5a5 !important;
+}
+
+.dark-mode .markdown-container :deep(strong),
+.dark-mode .markdown-container :deep(b) {
+  color: var(--color-heading) !important;
 }
 
 .markdown-container :deep(ul),

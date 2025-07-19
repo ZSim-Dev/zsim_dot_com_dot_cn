@@ -1,5 +1,6 @@
 import json
 import os
+import tomllib
 
 import aiofiles
 import aiosqlite
@@ -9,7 +10,9 @@ from .auth import get_current_user
 
 router = APIRouter()
 
-DB_PATH = "./.database/votes.db"
+with open("backend/config.toml", "rb") as f:
+    config = tomllib.load(f)
+    DB_PATH = config["database"]["vote_db_path"]
 AVATARS_PATH = os.path.join(os.path.dirname(__file__), "assets", "avatars.json")
 
 
@@ -39,9 +42,7 @@ async def init_vote_db():
 async def get_user_votes(current_user: str = Depends(get_current_user)):
     """获取当前用户的投票记录"""
     async with aiosqlite.connect(DB_PATH) as conn:
-        async with conn.execute(
-            "SELECT character_id FROM user_votes WHERE username = ?", (current_user,)
-        ) as cursor:
+        async with conn.execute("SELECT character_id FROM user_votes WHERE username = ?", (current_user,)) as cursor:
             rows = await cursor.fetchall()
             return [row[0] for row in rows]
 
@@ -81,9 +82,7 @@ async def get_characters_with_votes():
 
 
 @router.post("/vote/character/{character_id}", tags=["Vote"])
-async def vote_for_character(
-    character_id: int, current_user: str = Depends(get_current_user)
-):
+async def vote_for_character(character_id: int, current_user: str = Depends(get_current_user)):
     """为指定角色投票"""
     async with aiosqlite.connect(DB_PATH) as conn:
         # 检查用户是否已投票

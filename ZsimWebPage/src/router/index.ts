@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../components/Home.vue';
-import DocsView from '../components/DocsView.vue';
-import LoginView from '../components/LoginView.vue';
-import VoteView from '../components/VoteView.vue';
+const Home = () => import('../components/Home.vue');
+const DocsView = () => import('../components/DocsView.vue');
+const LoginView = () => import('../components/LoginView.vue');
+const VoteView = () => import('../components/VoteView.vue');
+const Downloads = () => import('../components/Downloads.vue');
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     name: 'VoteView',
     component: VoteView
   },
+  {
+    path: '/downloads',
+    name: 'Downloads',
+    component: Downloads
+  }
 ];
 
 const router = createRouter({

@@ -6,14 +6,14 @@ const router = useRouter()
 const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
-const phone = ref('')
+const email = ref('')
 const verificationCode = ref('')
 const loading = ref(false)
 const sendingCode = ref(false)
 const countdown = ref(0)
 const loginError = ref('')
 const registerError = ref('')
-const mode = ref<'login' | 'register' | 'phone'>('login')
+const mode = ref<'login' | 'register' | 'email'>('login')
 
 // 计算倒计时显示文本
 const codeButtonText = computed(() => {
@@ -22,9 +22,9 @@ const codeButtonText = computed(() => {
   return '获取验证码'
 })
 
-// 验证手机号格式
-const isValidPhone = computed(() => {
-  return /^1[3-9]\d{9}$/.test(phone.value)
+// 验证邮箱格式
+const isValidEmail = computed(() => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
 })
 
 // 倒计时功能
@@ -74,7 +74,7 @@ async function handleLogin() {
 }
 
 async function handleRegister() {
-  if (!username.value || !password.value || !confirmPassword.value || !phone.value || !verificationCode.value) {
+  if (!username.value || !password.value || !confirmPassword.value || !email.value || !verificationCode.value) {
     registerError.value = '请填写所有必填字段'
     return
   }
@@ -84,8 +84,8 @@ async function handleRegister() {
     return
   }
 
-  if (!/^1[3-9]\d{9}$/.test(phone.value)) {
-    registerError.value = '请输入正确的手机号'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    registerError.value = '请输入正确的邮箱地址'
     return
   }
 
@@ -104,7 +104,7 @@ async function handleRegister() {
         username: username.value,
         password: password.value,
         confirm_password: confirmPassword.value,
-        phone: phone.value,
+        email: email.value,
         code: verificationCode.value
       }),
     })
@@ -114,15 +114,8 @@ async function handleRegister() {
       loading.value = false
       return
     }
-    // 注册成功后切换到登录模式
-    mode.value = 'login'
-    // 清空表单
-    username.value = ''
-    password.value = ''
-    confirmPassword.value = ''
-    phone.value = ''
-    verificationCode.value = ''
-    countdown.value = 0
+    // 注册成功后自动登录
+    await handleLogin()
   } catch (e) {
     registerError.value = '网络错误'
   } finally {
@@ -131,41 +124,56 @@ async function handleRegister() {
 }
 
 // 发送验证码
-async function sendVerificationCode() {
-  if (!isValidPhone.value) {
-    loginError.value = '请输入正确的手机号'
+async function sendVerificationCode(purpose: 'login' | 'register') {
+  if (!isValidEmail.value) {
+    const errorMsg = '请输入正确的邮箱地址'
+    if (purpose === 'register') {
+      registerError.value = errorMsg
+    } else {
+      loginError.value = errorMsg
+    }
     return
   }
 
   sendingCode.value = true
+  registerError.value = ''
   loginError.value = ''
 
   try {
     const res = await fetch('/api/send-code', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone.value })
+      body: JSON.stringify({ email: email.value, purpose })
     })
 
     const data = await res.json()
     if (!res.ok) {
-      loginError.value = data.detail || '验证码发送失败'
+      const errorMsg = data.detail || '验证码发送失败'
+      if (purpose === 'register') {
+        registerError.value = errorMsg
+      } else {
+        loginError.value = errorMsg
+      }
       return
     }
 
     startCountdown()
-    loginError.value = ''
   } catch (e) {
-    loginError.value = '网络连接断开或服务离线'
+    const errorMsg = '网络连接断开或服务离线'
+    if (purpose === 'register') {
+      registerError.value = errorMsg
+    } else {
+      loginError.value = errorMsg
+    }
   } finally {
     sendingCode.value = false
   }
 }
 
-// 手机号验证码登录
-async function handlePhoneLogin() {
-  if (!isValidPhone.value) {
-    loginError.value = '请输入正确的手机号'
+// 邮箱验证码登录
+async function handleEmailLogin() {
+  if (!isValidEmail.value) {
+    loginError.value = '请输入正确的邮箱地址'
     return
   }
 
@@ -178,11 +186,11 @@ async function handlePhoneLogin() {
   loginError.value = ''
 
   try {
-    const res = await fetch('/api/login-phone', {
+    const res = await fetch('/api/login-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        phone: phone.value,
+        email: email.value,
         code: verificationCode.value
       })
     })
@@ -223,7 +231,7 @@ function switchMode() {
   username.value = ''
   password.value = ''
   confirmPassword.value = ''
-  phone.value = ''
+  email.value = ''
   verificationCode.value = ''
   countdown.value = 0
 }
@@ -236,10 +244,10 @@ function switchMode() {
         <!-- 标题 -->
         <div class="login-header">
           <h1 class="login-title">
-            {{ mode === 'login' ? '账号登录' : mode === 'phone' ? '手机登录' : '创建账号' }}
+            {{ mode === 'login' ? '账号登录' : mode === 'email' ? '邮箱登录' : '创建账号' }}
           </h1>
           <p class="login-subtitle">
-            {{ mode === 'login' ? '使用用户名和密码登录' : mode === 'phone' ? '使用手机号和验证码登录' : '创建新的账号' }}
+            {{ mode === 'login' ? '使用用户名和密码登录' : mode === 'email' ? '使用邮箱和验证码登录' : '创建新的账号' }}
           </p>
         </div>
 
@@ -257,20 +265,20 @@ function switchMode() {
           </button>
         </div>
 
-        <!-- 手机号验证码登录 -->
-        <div v-if="mode === 'phone'" class="form-container">
+        <!-- 邮箱验证码登录 -->
+        <div v-if="mode === 'email'" class="form-container">
           <div class="input-group">
-            <input v-model="phone" class="apple-input" type="tel" placeholder="手机号" maxlength="11" />
+            <input v-model="email" class="apple-input" type="email" placeholder="邮箱" />
           </div>
           <div class="input-group code-group">
             <input v-model="verificationCode" class="apple-input code-input" type="text" placeholder="验证码" maxlength="6"
-              @keyup.enter="handlePhoneLogin" />
-            <button class="code-btn" :disabled="!isValidPhone || sendingCode || countdown > 0"
-              @click="sendVerificationCode">
+              @keyup.enter="handleEmailLogin" />
+            <button class="code-btn" :disabled="!isValidEmail || sendingCode || countdown > 0"
+              @click="sendVerificationCode('login')">
               {{ codeButtonText }}
             </button>
           </div>
-          <button class="apple-btn primary" :disabled="loading" @click="handlePhoneLogin">
+          <button class="apple-btn primary" :disabled="loading" @click="handleEmailLogin">
             {{ loading ? '登录中...' : '登录' }}
           </button>
         </div>
@@ -289,13 +297,13 @@ function switchMode() {
               autocomplete="new-password" />
           </div>
           <div class="input-group">
-            <input v-model="phone" class="apple-input" type="tel" placeholder="手机号" maxlength="11" />
+            <input v-model="email" class="apple-input" type="email" placeholder="邮箱" />
           </div>
           <div class="input-group code-group">
             <input v-model="verificationCode" class="apple-input code-input" type="text" placeholder="验证码" maxlength="6"
               @keyup.enter="handleRegister" />
-            <button class="code-btn" :disabled="!isValidPhone || countdown > 0 || loading"
-              @click="sendVerificationCode">
+            <button class="code-btn" :disabled="!isValidEmail || countdown > 0 || loading"
+              @click="sendVerificationCode('register')">
               {{ codeButtonText }}
             </button>
           </div>
@@ -318,9 +326,9 @@ function switchMode() {
             @click="mode = 'login'; loginError = ''; username = ''; password = ''">
             账号登录
           </button>
-          <button :class="['mode-btn', { active: mode === 'phone' }]"
-            @click="mode = 'phone'; loginError = ''; phone = ''; verificationCode = ''; countdown = 0">
-            手机登录
+          <button :class="['mode-btn', { active: mode === 'email' }]"
+            @click="mode = 'email'; loginError = ''; email = ''; verificationCode = ''; countdown = 0">
+            邮箱登录
           </button>
         </div>
 

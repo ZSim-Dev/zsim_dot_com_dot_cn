@@ -36,6 +36,29 @@
   --section-gap: 160px;
 
   --color-description: var(--vt-c-text-light-2);
+
+  /* Header 组件变量 */
+  --header-bg: #fff;
+  --header-border: #eee;
+  --header-shadow: rgba(0, 0, 0, 0.03);
+  --text-primary: #222;
+  --text-secondary: #333;
+  --hover-bg: #f5f5f5;
+  --button-bg: #2c3e50;
+  --button-hover: #1a2533;
+  --github-fill: #181616;
+
+  /* Downloads Page */
+  --downloads-bg: #ffffff;
+  --downloads-text: #333;
+  --downloads-subtitle-text: #666;
+  --downloads-link: #007aff;
+  --downloads-link-hover: #0056b3;
+  --downloads-section-border: #e0e0e0;
+  --downloads-card-bg: #f9f9f9;
+  --downloads-card-border: #e0e0e0;
+  --downloads-card-latest-border: #007aff;
+  --downloads-history-item-border: #f0f0f0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -50,6 +73,29 @@
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
     --color-description: var(--vt-c-text-dark-2);
+
+    /* Header 组件深色模式变量 */
+    --header-bg: #1a1a1a;
+    --header-border: #333;
+    --header-shadow: rgba(0, 0, 0, 0.2);
+    --text-primary: #e0e0e0;
+    --text-secondary: #d0d0d0;
+    --hover-bg: #2a2a2a;
+    --button-bg: #4a5568;
+    --button-hover: #2d3748;
+    --github-fill: #e0e0e0;
+
+    /* Downloads Page */
+    --downloads-bg: var(--vt-c-black-soft);
+    --downloads-text: var(--vt-c-text-dark-1);
+    --downloads-subtitle-text: var(--vt-c-text-dark-2);
+    --downloads-link: #007aff;
+    --downloads-link-hover: #4caaff;
+    --downloads-section-border: var(--color-border);
+    --downloads-card-bg: var(--vt-c-black-mute);
+    --downloads-card-border: var(--color-border);
+    --downloads-card-latest-border: #007aff;
+    --downloads-history-item-border: var(--color-border);
   }
 }
 

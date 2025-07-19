@@ -9,10 +9,14 @@ dependencies = [
     "aiosqlite>=0.21.0",
     "alibabacloud-dysmsapi20170525==4.1.2",
     "fastapi>=0.115.13",
-    "pydantic>=2.11.7",
+    "httpx>=0.28.1",
+    "pydantic[email]>=2.11.7",
     "python-multipart>=0.0.20",
     "uvicorn>=0.34.3",
 ]
+
+[tool.ruff]
+line-length = 120
 
 [[tool.uv.index]]
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"

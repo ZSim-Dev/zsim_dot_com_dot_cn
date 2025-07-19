@@ -1,9 +1,5 @@
 <script setup lang="ts">
-const download_link: string = 'https://github.com/zhiqiang0/ZSimulator/releases';
 
-function handleDownload() {
-  window.open(download_link, '_blank');
-}
 </script>
 
 <template>
@@ -17,7 +13,7 @@ function handleDownload() {
     </div>
 
     <div class="main-content">
-      <button class="download-btn" @click="handleDownload">下载桌面版</button>
+      <router-link to="/downloads" class="download-btn">下载桌面版</router-link>
       <div class="links">
         <router-link to="/docs" class="link-item">使用文档</router-link>
         <a href="/vote" class="link-item">功能投票</a>
@@ -42,6 +38,7 @@ function handleDownload() {
   border-radius: 20px;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin-top: 1.5rem;
 }
 
 @keyframes fadeInPage {
@@ -241,7 +238,7 @@ function handleDownload() {
 @media (max-width: 768px) {
   .homepage {
     padding: 1rem;
-    margin: 1rem;
+    margin: 1rem auto;
   }
 
   .title {

@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
   // 根据环境模式加载不同的后端地址
   const apiTarget = mode === 'production'
     ? process.env.VITE_API_URL || 'http://localhost:8000'
-    : process.env.VITE_DEV_API_URL || 'http://127.0.0.1:8000'
+    : process.env.VITE_DEV_API_URL || 'http://localhost:8000'
 
   return {
     plugins: [
