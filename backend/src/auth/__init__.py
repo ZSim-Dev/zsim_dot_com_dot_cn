@@ -16,8 +16,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 class UserCreate(BaseModel):
     """用户注册模型"""
 
-    username: str = Field(..., description="用户名", min_length=3, max_length=20, pattern=r"^[a-zA-Z0-9_]+$")
-    password: str = Field(..., description="密码", min_length=6, max_length=20, pattern=r"^[a-zA-Z0-9_]+$")
+    username: str = Field(..., description="用户名", min_length=3, max_length=20)
+    password: str = Field(..., description="密码", min_length=6, max_length=20)
     confirm_password: str = Field(..., description="确认密码", min_length=6, max_length=20)
     email: EmailStr = Field(..., description="邮箱地址")
     code: str = Field(..., description="验证码", min_length=6, max_length=6)
