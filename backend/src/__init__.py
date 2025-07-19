@@ -1,6 +1,5 @@
 from contextlib import asynccontextmanager
 
-from backend.src.github.release_api import LatestReleaseCache
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
@@ -16,10 +15,12 @@ from .auth import (
     send_verification_code,
 )
 from .auth import (
-    init_db as init_auth_db,
     close_db as close_auth_db,
 )
-from .github.release_api import get_latest_release_from_cache
+from .auth import (
+    init_db as init_auth_db,
+)
+from .github.release_api import LatestReleaseCache, get_latest_release_from_cache
 from .vote import init_vote_db
 from .vote import router as vote_router
 
