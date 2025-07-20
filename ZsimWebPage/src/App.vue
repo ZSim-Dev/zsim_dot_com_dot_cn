@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
+const { t, locale } = useI18n()
 const router = useRouter()
 const menuOpen = ref(false)
 
 const menuItems = [
-  { label: '主页', action: () => goHome() },
-  { label: '下载', action: () => goTo('/downloads') },
-  { label: '文档', action: () => goTo('/docs') },
-  { label: '投票', action: () => goTo('/vote') }
+  { label: 'message.home', action: () => goHome() },
+  { label: 'message.download', action: () => goTo('/downloads') },
+  { label: 'message.docs', action: () => goTo('/docs') },
+  { label: 'message.vote', action: () => goTo('/vote') }
 ]
 
 function goHome() {
@@ -55,6 +57,13 @@ async function fetchUser() {
   }
 }
 
+import { loadLocaleMessages } from './i18n';
+
+async function switchLanguage(lang: string) {
+  await loadLocaleMessages(lang);
+  localStorage.setItem('locale', lang);
+}
+
 onMounted(() => {
   const t = localStorage.getItem('token')
   if (t) {
@@ -75,12 +84,11 @@ onMounted(() => {
     </button>
     <div class="header-left" @click="goHome" style="cursor:pointer;">
       <img src="/assets/zsim-logo.svg" alt="logo" class="logo" />
-      <span class="zsim-title">ZSim 模拟器</span>
+      <span class="zsim-title">{{ t('message.nav-title') }}</span>
     </div>
     <!-- 普通菜单，大屏显示 -->
     <nav class="header-menu">
-      <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">{{ item.label
-        }}</button>
+      <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">{{ t(item.label) }}</button>
     </nav>
     <div class="header-right">
       <button class="github-btn" @click="goTo('https://github.com/ZZZSimulator/ZSim')">
@@ -90,19 +98,22 @@ onMounted(() => {
             fill="currentColor" />
         </svg>
       </button>
+      <div class="language-switcher">
+        <button @click="switchLanguage('zh')" :class="{ 'active': locale === 'zh' }">中</button>
+        <button @click="switchLanguage('en')" :class="{ 'active': locale === 'en' }">EN</button>
+      </div>
       <template v-if="user">
-        <span class="user-info">你好，{{ user }}</span>
-        <button class="login-btn" @click="logout">登出</button>
+        <span class="user-info">{{ t('message.hello') }}，{{ user }}</span>
+        <button class="login-btn" @click="logout">{{ t('message.logout') }}</button>
       </template>
       <template v-else>
-        <button class="login-btn" @click="router.push('/login')">登录</button>
+        <button class="login-btn" @click="router.push('/login')">{{ t('message.login') }}</button>
       </template>
     </div>
     <!-- 弹出菜单，小屏显示 -->
     <transition name="mobile-menu-fade">
       <div v-if="menuOpen" class="mobile-menu" @click.self="menuOpen = false">
-        <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">{{ item.label
-          }}</button>
+        <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">{{ t(item.label) }}</button>
       </div>
     </transition>
   </header>
@@ -242,6 +253,32 @@ onMounted(() => {
 
 .github-icon {
   display: block;
+}
+
+.language-switcher {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+  background-color: var(--color-background-mute);
+  border-radius: 16px;
+  padding: 4px;
+}
+
+.language-switcher button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.language-switcher button.active {
+  background-color: var(--color-background);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 /* 主题切换按钮样式 */

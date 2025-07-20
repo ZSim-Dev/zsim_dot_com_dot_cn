@@ -2,7 +2,6 @@ import json
 import os
 import tomllib
 
-import aiofiles
 import aiosqlite
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -14,6 +13,13 @@ with open("backend/config.toml", "rb") as f:
     config = tomllib.load(f)
     DB_PATH = config["database"]["vote_db_path"]
 AVATARS_PATH = os.path.join(os.path.dirname(__file__), "assets", "avatars.json")
+
+# Load characters data into memory on startup
+try:
+    with open(AVATARS_PATH, "r", encoding="utf-8") as f:
+        CHARACTERS_DATA: list[dict] = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    CHARACTERS_DATA = []
 
 
 async def init_vote_db():
@@ -50,11 +56,8 @@ async def get_user_votes(current_user: str = Depends(get_current_user)):
 @router.get("/vote/characters", tags=["Vote"])
 async def get_characters_with_votes():
     """获取所有角色及其票数"""
-    if not os.path.exists(AVATARS_PATH):
-        raise HTTPException(status_code=500, detail="角色数据文件未找到")
-
-    async with aiofiles.open(AVATARS_PATH, mode="r", encoding="utf-8") as f:
-        characters_data = json.loads(await f.read())
+    if not CHARACTERS_DATA:
+        raise HTTPException(status_code=500, detail="角色数据文件未找到或加载失败")
 
     async with aiosqlite.connect(DB_PATH) as conn:
         conn.row_factory = aiosqlite.Row
@@ -62,20 +65,21 @@ async def get_characters_with_votes():
             votes_rows = await cursor.fetchall()
             votes_map = {row["character_id"]: row["votes"] for row in votes_rows}
 
-    for char in characters_data:
+    characters_with_votes = CHARACTERS_DATA[:]
+
+    for char in characters_with_votes:
         char["votes"] = votes_map.get(char["id"], 0)
-        # 只保留需要的字段，特别是icon的第一个URL
         char["icon_url"] = char["icon"][0] if char.get("icon") else ""
 
-    # 精简返回的字段
     result = [
         {
             "id": char["id"],
             "name": char["name"],
-            "avatar": char["icon_url"],  # 前端使用的是avatar字段
+            "name_en": char["name_en"],
+            "avatar": char["icon_url"],
             "votes": char["votes"],
         }
-        for char in characters_data
+        for char in characters_with_votes
     ]
 
     return result

@@ -3,7 +3,7 @@
     <!-- 左侧导航栏 -->
     <aside class="sidebar">
       <nav class="toc-nav" :class="{ 'dark-mode': isDarkMode }">
-        <h3 class="toc-title">目录</h3>
+        <h3 class="toc-title">{{ $t('docs.toc_title') }}</h3>
         <div class="toc-content" v-html="tocHtml"></div>
       </nav>
     </aside>
@@ -11,8 +11,8 @@
     <!-- 主要内容区域 -->
     <main class="docs-content">
       <div class="content-header">
-        <h1>使用文档</h1>
-        <p class="subtitle">了解如何使用 ZSim 模拟器的详细指南</p>
+        <h1>{{ $t('docs.title') }}</h1>
+        <p class="subtitle">{{ $t('docs.subtitle') }}</p>
       </div>
 
       <article class="markdown-container" :class="{ 'dark-mode': isDarkMode }" v-html="renderedMarkdown"></article>
@@ -26,6 +26,9 @@ import 'highlight.js/styles/github-dark.css'
 import 'highlight.js/styles/github.css'
 import MarkdownIt from 'markdown-it'
 import { inject, nextTick, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t, locale } = useI18n();
 
 // 注入深色模式状态（如果父组件提供）
 const isDarkMode = inject('isDarkMode', ref(false))
@@ -56,7 +59,10 @@ const md = new MarkdownIt({
  * @param mdText markdown文本内容
  */
 function generateTOC(mdText: string): void {
-  const headings = mdText.match(/^#{1,6} .+/gm)
+  // 移除代码块内容，防止其中的注释被误判为标题
+  const textWithoutCodeBlocks = mdText.replace(/```[\s\S]*?```/g, '');
+
+  const headings = textWithoutCodeBlocks.match(/^#{1,6} .+/gm)
   if (headings) {
     const tocItems = headings.map(heading => {
       const level = heading.match(/^#+/)?.[0].length || 1
@@ -140,14 +146,9 @@ function updateCodeTheme(): void {
   document.head.appendChild(link)
 }
 
-// 监听深色模式变化
-watch(isDarkMode, () => {
-  updateCodeTheme()
-}, { immediate: true })
-
-onMounted(async () => {
+async function loadDocs() {
   try {
-    const res = await fetch('/docs/doc.md')
+    const res = await fetch(`/docs/doc.${locale.value}.md`)
     const text = await res.text()
     mdContent.value = text
 
@@ -164,9 +165,22 @@ onMounted(async () => {
     // 初始化代码主题
     updateCodeTheme()
   } catch (error) {
-    console.error('加载文档失败:', error)
-    renderedMarkdown.value = '<p>文档加载失败，请稍后重试。</p>'
+    console.error(t('docs.load_error_console'), error)
+    renderedMarkdown.value = `<p>${t('docs.load_error')}</p>`
   }
+}
+
+// 监听深色模式变化
+watch(isDarkMode, () => {
+  updateCodeTheme()
+}, { immediate: true })
+
+watch(locale, () => {
+  loadDocs();
+})
+
+onMounted(async () => {
+  loadDocs();
 })
 </script>
 

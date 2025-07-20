@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 </script>
 
 <template>
@@ -8,15 +10,15 @@
       <div class="logo">
         <img src="/assets/zsim-logo.svg" alt="logo" class="logo" />
       </div>
-      <p class="title">ZSim 模拟器</p>
-      <p class="description">ZSim 是一个独立的绝区零自动模拟器，我们实现了模拟绝区零的战斗，并支持全脚本化的出招。</p>
+      <p class="title">{{ t('message.title') }}</p>
+      <p class="description">{{ t('message.description') }}</p>
     </div>
 
     <div class="main-content">
-      <router-link to="/downloads" class="download-btn">下载桌面版</router-link>
+      <router-link to="/downloads" class="download-btn">{{ t('message.download_desktop') }}</router-link>
       <div class="links">
-        <router-link to="/docs" class="link-item">使用文档</router-link>
-        <a href="/vote" class="link-item">功能投票</a>
+        <router-link to="/docs" class="link-item">{{ t('message.user_guide') }}</router-link>
+        <a href="/vote" class="link-item">{{ t('message.feature_vote') }}</a>
       </div>
     </div>
   </div>

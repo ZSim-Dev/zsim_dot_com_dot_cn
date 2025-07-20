@@ -1,15 +1,23 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios';
+import { useI18n } from 'vue-i18n';
+
+const { t, locale } = useI18n();
 
 // 投票类别
-const voteCategories = ['角色投票', '功能投票', '其他投票']
-const currentCategory = ref('角色投票')
+const voteCategories = computed(() => [
+  { key: 'character', label: t('vote.character_vote') },
+  { key: 'feature', label: t('vote.feature_vote') },
+  { key: 'other', label: t('vote.other_vote') }
+]);
+const selectedCategoryKey = ref('character');
 
 // 角色投票的临时数据
 interface Character {
   id: number
   name: string
+  name_en: string
   avatar: string
   votes: number
 }
@@ -42,7 +50,7 @@ async function fetchUserVotes() {
 
 async function handleVote(character: Character) {
   if (!token.value) {
-    alert('请先登录再投票');
+    alert(t('vote.login_to_vote'));
     // 这里可以引导用户去登录页面
     return;
   }
@@ -58,14 +66,23 @@ async function handleVote(character: Character) {
       alert(error.response.data.detail);
     } else {
       console.error('投票失败:', error);
-      alert('投票失败，请稍后再试');
+      alert(t('vote.vote_failed'));
     }
   }
 }
 
-function switchCategory(category: string) {
-  currentCategory.value = category
+function switchCategory(categoryKey: string) {
+  selectedCategoryKey.value = categoryKey;
 }
+
+const getCharacterName = (char: Character) => {
+  return locale.value === 'en' ? char.name_en : char.name;
+};
+
+const currentCategoryLabel = computed(() => {
+    const current = voteCategories.value.find(c => c.key === selectedCategoryKey.value);
+    return current ? current.label : '';
+});
 
 onMounted(() => {
   fetchCharacters();
@@ -76,32 +93,32 @@ onMounted(() => {
 <template>
   <div class="vote-page">
     <header class="vote-header">
-      <h1>功能投票</h1>
-      <p>为你最期待的功能或最喜欢的角色投上一票</p>
+      <h1>{{ t('vote.title') }}</h1>
+      <p>{{ t('vote.subtitle') }}</p>
     </header>
 
     <div class="category-switcher">
-      <button v-for="category in voteCategories" :key="category"
-        :class="['category-btn', { active: currentCategory === category }]" @click="switchCategory(category)">
-        {{ category }}
+      <button v-for="category in voteCategories" :key="category.key" 
+        :class="['category-btn', { active: selectedCategoryKey === category.key }]" @click="switchCategory(category.key)">
+        {{ category.label }}
       </button>
     </div>
 
     <div class="vote-content">
       <transition name="fade-view" mode="out-in">
-        <div v-if="currentCategory === '角色投票'" class="character-grid">
+        <div v-if="selectedCategoryKey === 'character'" class="character-grid">
           <div v-for="char in characters" :key="char.id" class="character-card">
-            <img :src="char.avatar" :alt="char.name" class="avatar" />
-            <span class="name">{{ char.name }}</span>
-            <span class="votes">{{ char.votes }} 票</span>
+            <img :src="char.avatar" :alt="getCharacterName(char)" class="avatar" />
+            <span class="name">{{ getCharacterName(char) }}</span>
+            <span class="votes">{{ char.votes }} {{ t('vote.votes') }}</span>
             <button class="vote-btn" @click="handleVote(char)" :disabled="votedCharacterIds.includes(char.id)">
-              {{ votedCharacterIds.includes(char.id) ? '已投票' : '投票' }}
+              {{ votedCharacterIds.includes(char.id) ? t('vote.voted') : t('vote.vote') }}
             </button>
           </div>
         </div>
         <div v-else class="not-supported">
-          <h2>{{ currentCategory }}</h2>
-          <p>该功能暂未开放，敬请期待！</p>
+          <h2>{{ t('vote.not_supported_title', { category: currentCategoryLabel }) }}</h2>
+          <p>{{ t('vote.not_supported_text') }}</p>
         </div>
       </transition>
     </div>

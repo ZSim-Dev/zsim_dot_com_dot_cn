@@ -1,0 +1,48 @@
+{
+  "message": {
+    "nav-title": "ZSim",
+    "home": "Home",
+    "download": "Downloads",
+    "docs": "Guide",
+    "vote": "Feature Vote",
+    "login": "Login",
+    "logout": "Logout",
+    "hello": "Hello",
+    "title": "ZSim - ZZZ Simulator",
+    "description": "ZSim is an independent Zenless Zone Zero auto simulator. We have implemented simulated combat from the game and support fully scripted and automated actions.",
+    "download_desktop": "Download Desktop APP",
+    "user_guide": "User Guide",
+    "feature_vote": "Feature Vote"
+  },
+  "downloads": {
+    "title": "ZSim Downloads",
+    "subtitle": "Get the latest version.",
+    "read_docs": "Read the getting started guide →",
+    "latest_version": "Current latest version:",
+    "loading": "Loading...",
+    "release_page": "Go to Release Page",
+    "download_stable": "Download Stable Version",
+    "no_stable_release": "There is currently no stable version available. Please download the code or pre-release version from the release page to run it yourself."
+  },
+  "vote": {
+    "title": "Feature Vote",
+    "subtitle": "Vote for your most anticipated feature or favorite character",
+    "character_vote": "Character Vote",
+    "feature_vote": "Feature Vote",
+    "other_vote": "Other Vote",
+    "vote": "Vote",
+    "votes": "Votes",
+    "voted": "Voted",
+    "not_supported_title": "{category}",
+    "not_supported_text": "This feature is not yet available, please stay tuned!",
+    "login_to_vote": "Please log in to vote",
+    "vote_failed": "Vote failed, please try again later"
+  },
+  "docs": {
+    "toc_title": "Table of Contents",
+    "title": "User Guide",
+    "subtitle": "A detailed guide on how to use the ZSim simulator",
+    "load_error": "Failed to load documentation, please try again later.",
+    "load_error_console": "Failed to load documentation:"
+  }
+}

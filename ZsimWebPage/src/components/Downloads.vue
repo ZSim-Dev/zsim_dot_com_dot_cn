@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface LatestReleaseCache {
   version: string
@@ -37,27 +40,27 @@ onMounted(async () => {
 <template>
   <div class="downloads-page">
     <header class="page-header">
-      <h1>ZSim下载</h1>
-      <p class="subtitle">获取最新版本。</p>
-      <router-link to="/docs" class="docs-link">阅读开始文档 →</router-link>
+      <h1>{{ t('downloads.title') }}</h1>
+      <p class="subtitle">{{ t('downloads.subtitle') }}</p>
+      <router-link to="/docs" class="docs-link">{{ t('downloads.read_docs') }}</router-link>
     </header>
 
     <main class="content-container">
       <div class="version-display">
-        当前最新版本: <strong><a :href="latestRelease?.release_page_url || 'https://github.com/ZZZSimulator/ZSim/releases/latest'" target="_blank">{{ latestRelease?.version || '加载中...' }}</a></strong>
+        {{ t('downloads.latest_version') }} <strong><a :href="latestRelease?.release_page_url || 'https://github.com/ZZZSimulator/ZSim/releases/latest'" target="_blank">{{ latestRelease?.version || t('downloads.loading') }}</a></strong>
       </div>
 
       <div class="actions-container">
         <a :href="releasePageUrl" target="_blank" class="action-btn release-btn">
-          前往发布页面
+          {{ t('downloads.release_page') }}
         </a>
         <a :href="stableVersion.url" class="action-btn download-btn" :class="{ 'disabled': !stableVersion.available }">
-          下载稳定版
+          {{ t('downloads.download_stable') }}
         </a>
       </div>
 
       <div v-if="!stableVersion.available" class="notice">
-        <p>目前暂未发布稳定版，请自行从发布页面下载代码或预发布版本运行。</p>
+        <p>{{ t('downloads.no_stable_release') }}</p>
       </div>
     </main>
   </div>

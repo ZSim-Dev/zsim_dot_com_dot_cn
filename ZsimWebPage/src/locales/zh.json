@@ -1,0 +1,48 @@
+{
+  "message": {
+    "nav-title": "ZSim",
+    "home": "主页",
+    "download": "下载",
+    "docs": "文档",
+    "vote": "投票",
+    "login": "登录",
+    "logout": "登出",
+    "hello": "你好",
+    "title": "ZSim 模拟器",
+    "description": "ZSim 是一个独立的绝区零自动模拟器，我们实现了模拟绝区零的战斗，并支持全脚本化的出招。",
+    "download_desktop": "下载桌面版",
+    "user_guide": "使用文档",
+    "feature_vote": "功能投票"
+  },
+  "downloads": {
+    "title": "ZSim下载",
+    "subtitle": "获取最新版本。",
+    "read_docs": "阅读开始文档 →",
+    "latest_version": "当前最新版本:",
+    "loading": "加载中...",
+    "release_page": "前往发布页面",
+    "download_stable": "下载稳定版",
+    "no_stable_release": "目前暂未发布稳定版，请自行从发布页面下载代码或预发布版本运行。"
+  },
+  "vote": {
+    "title": "功能投票",
+    "subtitle": "为你最期待的功能或最喜欢的角色投上一票",
+    "character_vote": "角色投票",
+    "feature_vote": "功能投票",
+    "other_vote": "其他投票",
+    "vote": "投票",
+    "votes": "票",
+    "voted": "已投票",
+    "not_supported_title": "{category}",
+    "not_supported_text": "该功能暂未开放，敬请期待！",
+    "login_to_vote": "请先登录再投票",
+    "vote_failed": "投票失败，请稍后再试"
+  },
+  "docs": {
+    "toc_title": "目录",
+    "title": "使用文档",
+    "subtitle": "了解如何使用 ZSim 模拟器的详细指南",
+    "load_error": "文档加载失败，请稍后重试。",
+    "load_error_console": "加载文档失败:"
+  }
+}
