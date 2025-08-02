@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const router = useRouter()
 const username = ref('')
 const password = ref('')
@@ -17,9 +19,9 @@ const mode = ref<'login' | 'register' | 'email'>('login')
 
 // 计算倒计时显示文本
 const codeButtonText = computed(() => {
-  if (sendingCode.value) return '发送中...'
-  if (countdown.value > 0) return `${countdown.value}s后重发`
-  return '获取验证码'
+  if (sendingCode.value) return t('login.sending')
+  if (countdown.value > 0) return t('login.resend', { count: countdown.value })
+  return t('login.get_code')
 })
 
 // 验证邮箱格式
@@ -52,7 +54,7 @@ async function handleLogin() {
     })
     const data = await res.json()
     if (!res.ok) {
-      loginError.value = data.detail || '登录失败'
+      loginError.value = data.detail || t('login.login_failed')
       loading.value = false
       return
     }
@@ -67,7 +69,7 @@ async function handleLogin() {
     }
     window.location.replace('/') // 登录成功后刷新首页
   } catch (e) {
-    loginError.value = '网络连接断开或服务离线'
+    loginError.value = t('login.network_error')
   } finally {
     loading.value = false
   }
@@ -75,22 +77,22 @@ async function handleLogin() {
 
 async function handleRegister() {
   if (!username.value || !password.value || !confirmPassword.value || !email.value || !verificationCode.value) {
-    registerError.value = '请填写所有必填字段'
+    registerError.value = t('login.fill_all_fields')
     return
   }
 
   if (password.value !== confirmPassword.value) {
-    registerError.value = '密码和确认密码不匹配'
+    registerError.value = t('login.password_mismatch')
     return
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-    registerError.value = '请输入正确的邮箱地址'
+    registerError.value = t('login.invalid_email')
     return
   }
 
   if (!/^\d{6}$/.test(verificationCode.value)) {
-    registerError.value = '请输入6位数字验证码'
+    registerError.value = t('login.invalid_code')
     return
   }
 
@@ -110,14 +112,14 @@ async function handleRegister() {
     })
     const data = await res.json()
     if (!res.ok) {
-      registerError.value = data.detail || '注册失败'
+      registerError.value = data.detail || t('login.register_failed')
       loading.value = false
       return
     }
     // 注册成功后自动登录
     await handleLogin()
   } catch (e) {
-    registerError.value = '网络错误'
+    registerError.value = t('login.network_error_simple')
   } finally {
     loading.value = false
   }
@@ -126,7 +128,7 @@ async function handleRegister() {
 // 发送验证码
 async function sendVerificationCode(purpose: 'login' | 'register') {
   if (!isValidEmail.value) {
-    const errorMsg = '请输入正确的邮箱地址'
+    const errorMsg = t('login.invalid_email')
     if (purpose === 'register') {
       registerError.value = errorMsg
     } else {
@@ -148,7 +150,7 @@ async function sendVerificationCode(purpose: 'login' | 'register') {
 
     const data = await res.json()
     if (!res.ok) {
-      const errorMsg = data.detail || '验证码发送失败'
+      const errorMsg = data.detail || t('login.code_send_failed')
       if (purpose === 'register') {
         registerError.value = errorMsg
       } else {
@@ -159,7 +161,7 @@ async function sendVerificationCode(purpose: 'login' | 'register') {
 
     startCountdown()
   } catch (e) {
-    const errorMsg = '网络连接断开或服务离线'
+    const errorMsg = t('login.network_error')
     if (purpose === 'register') {
       registerError.value = errorMsg
     } else {
@@ -173,12 +175,12 @@ async function sendVerificationCode(purpose: 'login' | 'register') {
 // 邮箱验证码登录
 async function handleEmailLogin() {
   if (!isValidEmail.value) {
-    loginError.value = '请输入正确的邮箱地址'
+    loginError.value = t('login.invalid_email')
     return
   }
 
   if (!verificationCode.value) {
-    loginError.value = '请输入验证码'
+    loginError.value = t('login.invalid_code')
     return
   }
 
@@ -197,7 +199,7 @@ async function handleEmailLogin() {
 
     const data = await res.json()
     if (!res.ok) {
-      loginError.value = data.detail || '登录失败'
+      loginError.value = data.detail || t('login.login_failed')
       return
     }
 
@@ -212,7 +214,7 @@ async function handleEmailLogin() {
     }
     window.location.replace('/') // 登录成功后刷新首页
   } catch (e) {
-    loginError.value = '网络连接断开或服务离线'
+    loginError.value = t('login.network_error')
   } finally {
     loading.value = false
   }
@@ -244,34 +246,34 @@ function switchMode() {
         <!-- 标题 -->
         <div class="login-header">
           <h1 class="login-title">
-            {{ mode === 'login' ? '账号登录' : mode === 'email' ? '邮箱登录' : '创建账号' }}
+            {{ mode === 'login' ? t('login.account_login') : mode === 'email' ? t('login.email_login') : t('login.create_account') }}
           </h1>
           <p class="login-subtitle">
-            {{ mode === 'login' ? '使用用户名和密码登录' : mode === 'email' ? '使用邮箱和验证码登录' : '创建新的账号' }}
+            {{ mode === 'login' ? t('login.account_login_subtitle') : mode === 'email' ? t('login.email_login_subtitle') : t('login.create_account_subtitle') }}
           </p>
         </div>
 
         <!-- 用户名密码登录 -->
         <div v-if="mode === 'login'" class="form-container">
           <div class="input-group">
-            <input v-model="username" class="apple-input" type="text" placeholder="用户名" autocomplete="username" />
+            <input v-model="username" class="apple-input" type="text" :placeholder="t('login.username')" autocomplete="username" />
           </div>
           <div class="input-group">
-            <input v-model="password" class="apple-input" type="password" placeholder="密码"
+            <input v-model="password" class="apple-input" type="password" :placeholder="t('login.password')"
               autocomplete="current-password" @keyup.enter="handleLogin" />
           </div>
           <button class="apple-btn primary" :disabled="loading" @click="handleLogin">
-            {{ loading ? '登录中...' : '登录' }}
+            {{ loading ? t('login.logging_in') : t('login.login_button') }}
           </button>
         </div>
 
         <!-- 邮箱验证码登录 -->
         <div v-if="mode === 'email'" class="form-container">
           <div class="input-group">
-            <input v-model="email" class="apple-input" type="email" placeholder="邮箱" />
+            <input v-model="email" class="apple-input" type="email" :placeholder="t('login.email')" />
           </div>
           <div class="input-group code-group">
-            <input v-model="verificationCode" class="apple-input code-input" type="text" placeholder="验证码" maxlength="6"
+            <input v-model="verificationCode" class="apple-input code-input" type="text" :placeholder="t('login.verification_code')" maxlength="6"
               @keyup.enter="handleEmailLogin" />
             <button class="code-btn" :disabled="!isValidEmail || sendingCode || countdown > 0"
               @click="sendVerificationCode('login')">
@@ -279,28 +281,28 @@ function switchMode() {
             </button>
           </div>
           <button class="apple-btn primary" :disabled="loading" @click="handleEmailLogin">
-            {{ loading ? '登录中...' : '登录' }}
+            {{ loading ? t('login.logging_in') : t('login.login_button') }}
           </button>
         </div>
 
         <!-- 注册 -->
         <div v-if="mode === 'register'" class="form-container">
           <div class="input-group">
-            <input v-model="username" class="apple-input" type="text" placeholder="用户名" autocomplete="username" />
+            <input v-model="username" class="apple-input" type="text" :placeholder="t('login.username')" autocomplete="username" />
           </div>
           <div class="input-group">
-            <input v-model="password" class="apple-input" type="password" placeholder="密码"
+            <input v-model="password" class="apple-input" type="password" :placeholder="t('login.password')"
               autocomplete="new-password" />
           </div>
           <div class="input-group">
-            <input v-model="confirmPassword" class="apple-input" type="password" placeholder="确认密码"
+            <input v-model="confirmPassword" class="apple-input" type="password" :placeholder="t('login.confirm_password')"
               autocomplete="new-password" />
           </div>
           <div class="input-group">
-            <input v-model="email" class="apple-input" type="email" placeholder="邮箱" />
+            <input v-model="email" class="apple-input" type="email" :placeholder="t('login.email')" />
           </div>
           <div class="input-group code-group">
-            <input v-model="verificationCode" class="apple-input code-input" type="text" placeholder="验证码" maxlength="6"
+            <input v-model="verificationCode" class="apple-input code-input" type="text" :placeholder="t('login.verification_code')" maxlength="6"
               @keyup.enter="handleRegister" />
             <button class="code-btn" :disabled="!isValidEmail || countdown > 0 || loading"
               @click="sendVerificationCode('register')">
@@ -308,7 +310,7 @@ function switchMode() {
             </button>
           </div>
           <button class="apple-btn primary" :disabled="loading" @click="handleRegister">
-            {{ loading ? '注册中...' : '注册' }}
+            {{ loading ? t('login.registering') : t('login.register_button') }}
           </button>
         </div>
 
@@ -324,18 +326,18 @@ function switchMode() {
         <div v-if="mode !== 'register'" class="login-mode-switch">
           <button :class="['mode-btn', { active: mode === 'login' }]"
             @click="mode = 'login'; loginError = ''; username = ''; password = ''">
-            账号登录
+            {{ t('login.account_login') }}
           </button>
           <button :class="['mode-btn', { active: mode === 'email' }]"
             @click="mode = 'email'; loginError = ''; email = ''; verificationCode = ''; countdown = 0">
-            邮箱登录
+            {{ t('login.email_login') }}
           </button>
         </div>
 
         <!-- 切换到注册/登录 -->
         <div class="switch-container">
           <button class="switch-btn" @click="switchMode" :disabled="loading">
-            {{ mode === 'register' ? '返回登录' : '注册账号' }}
+            {{ mode === 'register' ? t('login.back_to_login') : t('login.register_account') }}
           </button>
         </div>
       </div>
@@ -344,25 +346,6 @@ function switchMode() {
 </template>
 
 <style scoped>
-/* Apple Design System Colors */
-:root {
-  --apple-blue: #007AFF;
-  --apple-blue-hover: #0056CC;
-  --apple-gray: #8E8E93;
-  --apple-gray-light: #F2F2F7;
-  --apple-gray-dark: #1C1C1E;
-  --apple-red: #FF3B30;
-  --apple-green: #34C759;
-  --apple-background: #FFFFFF;
-  --apple-surface: #F9F9F9;
-  --apple-border: #D1D1D6;
-  --apple-text: #000000;
-  --apple-text-secondary: #6D6D70;
-  --apple-input-bg: #FFFFFF;
-  --apple-input-focus-bg: #FFFFFF;
-  --apple-input-border: #C7C7CC;
-  --apple-input-border-focus: #007AFF;
-}
 
 .login-page {
   min-height: 70vh;
@@ -370,7 +353,7 @@ function switchMode() {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: transparent;
 }
 
 .login-box {
@@ -386,7 +369,6 @@ function switchMode() {
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* 标题区域 */
@@ -475,7 +457,7 @@ function switchMode() {
 
 .code-btn:hover:not(:disabled) {
   background: var(--apple-blue);
-  color: white;
+  color: var(--apple-text);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
 }
@@ -502,7 +484,7 @@ function switchMode() {
 
 .apple-btn.primary {
   background: var(--apple-blue);
-  color: white;
+  color: var(--apple-text);
   box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
 }
 
@@ -526,14 +508,14 @@ function switchMode() {
 
 /* 错误信息 */
 .error-message {
-  background: rgba(255, 59, 48, 0.1);
+  background: rgba(255, 59, 48, 0.15);
   color: var(--apple-red);
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 14px;
   text-align: center;
   margin-top: 16px;
-  border: 1px solid rgba(255, 59, 48, 0.2);
+  border: 1px solid rgba(255, 59, 48, 0.3);
 }
 
 /* 登录模式切换 */
@@ -563,7 +545,7 @@ function switchMode() {
 .login-mode-switch .mode-btn.active {
   background: var(--apple-background);
   color: var(--apple-text);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* 注册标题 */
@@ -654,21 +636,8 @@ function switchMode() {
 
 /* 深色模式支持 */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --apple-background: #1C1C1E;
-    --apple-surface: #2C2C2E;
-    --apple-border: #48484A;
-    --apple-text: #FFFFFF;
-    --apple-text-secondary: #98989D;
-    --apple-gray-light: #2C2C2E;
-    --apple-input-bg: #2C2C2E;
-    --apple-input-focus-bg: #3A3A3C;
-    --apple-input-border: #5A5A5E;
-    --apple-input-border-focus: #007AFF;
-  }
-
   .login-page {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    background: transparent;
   }
 }
 </style>

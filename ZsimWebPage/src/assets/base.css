@@ -59,6 +59,24 @@
   --downloads-card-border: #e0e0e0;
   --downloads-card-latest-border: #007aff;
   --downloads-history-item-border: #f0f0f0;
+
+  /* Login Page Apple Design System Colors */
+  --apple-blue: #007AFF;
+  --apple-blue-hover: #0056CC;
+  --apple-gray: #8E8E93;
+  --apple-gray-light: #F2F2F7;
+  --apple-gray-dark: #1C1C1E;
+  --apple-red: #FF3B30;
+  --apple-green: #34C759;
+  --apple-background: #FFFFFF;
+  --apple-surface: #F9F9F9;
+  --apple-border: #D1D1D6;
+  --apple-text: #000000;
+  --apple-text-secondary: #6D6D70;
+  --apple-input-bg: #FFFFFF;
+  --apple-input-focus-bg: #FFFFFF;
+  --apple-input-border: #C7C7CC;
+  --apple-input-border-focus: #007AFF;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -96,6 +114,19 @@
     --downloads-card-border: var(--color-border);
     --downloads-card-latest-border: #007aff;
     --downloads-history-item-border: var(--color-border);
+
+    /* Login Page Apple Design System Colors (Dark Mode) */
+    --apple-background: #1C1C1E;
+    --apple-surface: #2C2C2E;
+    --apple-border: #48484A;
+    --apple-text: #FFFFFF;
+    --apple-text-secondary: #98989D;
+    --apple-gray: #8E8E93;
+    --apple-gray-light: #2C2C2E;
+    --apple-input-bg: #2C2C2E;
+    --apple-input-focus-bg: #3A3A3C;
+    --apple-input-border: #5A5A5E;
+    --apple-input-border-focus: #007AFF;
   }
 }
 

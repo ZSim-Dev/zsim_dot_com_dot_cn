@@ -37,6 +37,7 @@ function logout() {
   token.value = null
   localStorage.removeItem('user')
   localStorage.removeItem('token')
+  menuOpen.value = false
   window.location.reload()
 }
 
@@ -90,30 +91,40 @@ onMounted(() => {
     <nav class="header-menu">
       <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">{{ t(item.label) }}</button>
     </nav>
-    <div class="header-right">
-      <button class="github-btn" @click="goTo('https://github.com/ZZZSimulator/ZSim')">
-        <svg t="1717920000000" class="github-icon" viewBox="0 0 1024 1024" width="24" height="24">
-          <path
-            d="M511.6 76.3C264.6 76.3 64 277.5 64 525.2c0 198.1 128.5 366.2 306.7 425.8 22.4 4.1 30.6-9.7 30.6-21.5 0-10.6-0.4-45.5-0.6-82.5-124.8 27.1-151.2-60.2-151.2-60.2-20.4-51.8-49.8-65.6-49.8-65.6-40.7-27.8 3.1-27.2 3.1-27.2 45 3.2 68.7 46.2 68.7 46.2 40 68.6 104.9 48.8 130.5 37.3 4.1-29 15.7-48.8 28.6-60-99.7-11.3-204.5-49.8-204.5-221.8 0-49 17.5-89 46.2-120.4-4.6-11.3-20-56.8 4.4-118.5 0 0 37.6-12.1 123.2 46.1 35.7-9.9 74-14.8 112.1-15 38 0.2 76.4 5.1 112.1 15 85.5-58.2 123.1-46.1 123.1-46.1 24.5 61.7 9.1 107.2 4.5 118.5 28.8 31.4 46.1 71.4 46.1 120.4 0 172.4-104.9 210.4-204.9 221.5 16.1 13.9 30.4 41.3 30.4 83.3 0 60.2-0.5 108.7-0.5 123.5 0 11.9 8 25.8 30.7 21.4C831.6 891.2 960 723.2 960 525.2c0-247.7-200.6-448.9-448.4-448.9z"
-            fill="currentColor" />
-        </svg>
-      </button>
-      <div class="language-switcher">
-        <button @click="switchLanguage('zh')" :class="{ 'active': locale === 'zh' }">中</button>
-        <button @click="switchLanguage('en')" :class="{ 'active': locale === 'en' }">EN</button>
+      <div class="header-right">
+        <button class="github-btn desktop-only" @click="goTo('https://github.com/ZZZSimulator/ZSim')">
+          <svg t="1717920000000" class="github-icon" viewBox="0 0 1024 1024" width="24" height="24">
+            <path
+              d="M511.6 76.3C264.6 76.3 64 277.5 64 525.2c0 198.1 128.5 366.2 306.7 425.8 22.4 4.1 30.6-9.7 30.6-21.5 0-10.6-0.4-45.5-0.6-82.5-124.8 27.1-151.2-60.2-151.2-60.2-20.4-51.8-49.8-65.6-49.8-65.6-40.7-27.8 3.1-27.2 3.1-27.2 45 3.2 68.7 46.2 68.7 46.2 40 68.6 104.9 48.8 130.5 37.3 4.1-29 15.7-48.8 28.6-60-99.7-11.3-204.5-49.8-204.5-221.8 0-49 17.5-89 46.2-120.4-4.6-11.3-20-56.8 4.4-118.5 0 0 37.6-12.1 123.2 46.1 35.7-9.9 74-14.8 112.1-15 38 0.2 76.4 5.1 112.1 15 85.5-58.2 123.1-46.1 123.1-46.1 24.5 61.7 9.1 107.2 4.5 118.5 28.8 31.4 46.1 71.4 46.1 120.4 0 172.4-104.9 210.4-204.9 221.5 16.1 13.9 30.4 41.3 30.4 83.3 0 60.2-0.5 108.7-0.5 123.5 0 11.9 8 25.8 30.7 21.4C831.6 891.2 960 723.2 960 525.2c0-247.7-200.6-448.9-448.4-448.9z"
+              fill="currentColor" />
+          </svg>
+        </button>
+        <div class="language-switcher">
+          <button @click="switchLanguage('zh')" :class="{ 'active': locale === 'zh' }">中</button>
+          <button @click="switchLanguage('en')" :class="{ 'active': locale === 'en' }">EN</button>
+        </div>
+        <div class="desktop-only">
+          <template v-if="user">
+            <span class="user-info">{{ t('message.hello') }}，{{ user }}</span>
+            <button class="login-btn" @click="logout">{{ t('message.logout') }}</button>
+          </template>
+          <template v-else>
+            <button class="login-btn" @click="router.push('/login')">{{ t('message.login') }}</button>
+          </template>
+        </div>
       </div>
-      <template v-if="user">
-        <span class="user-info">{{ t('message.hello') }}，{{ user }}</span>
-        <button class="login-btn" @click="logout">{{ t('message.logout') }}</button>
-      </template>
-      <template v-else>
-        <button class="login-btn" @click="router.push('/login')">{{ t('message.login') }}</button>
-      </template>
-    </div>
     <!-- 弹出菜单，小屏显示 -->
     <transition name="mobile-menu-fade">
       <div v-if="menuOpen" class="mobile-menu" @click.self="menuOpen = false">
         <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">{{ t(item.label) }}</button>
+        <div class="mobile-menu-divider"></div>
+        <template v-if="user">
+          <div class="mobile-user-info">{{ t('message.hello') }}，{{ user }}</div>
+          <button class="menu-btn mobile-logout-btn" @click="logout">{{ t('message.logout') }}</button>
+        </template>
+        <template v-else>
+          <button class="menu-btn mobile-login-btn" @click="goTo('/login')">{{ t('message.login') }}</button>
+        </template>
       </div>
     </transition>
   </header>
@@ -361,6 +372,38 @@ onMounted(() => {
   margin: 0;
 }
 
+.mobile-menu-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--header-border);
+  margin: 8px 0;
+}
+
+.mobile-user-info {
+  width: 100%;
+  text-align: left;
+  padding: 10px 24px;
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.mobile-login-btn,
+.mobile-logout-btn {
+  width: 100%;
+  text-align: left;
+  padding: 10px 24px;
+  font-size: 16px;
+  border-radius: 0;
+  margin: 0;
+  background: var(--button-bg);
+  color: #fff;
+}
+
+.mobile-login-btn:hover,
+.mobile-logout-btn:hover {
+  background: var(--button-hover);
+}
+
 /* 动画样式 */
 .mobile-menu-fade-enter-active,
 .mobile-menu-fade-leave-active {
@@ -412,6 +455,10 @@ onMounted(() => {
 
   .header-right {
     margin-left: auto;
+  }
+
+  .desktop-only {
+    display: none;
   }
 }
 </style>

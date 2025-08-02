@@ -44,5 +44,39 @@
     "subtitle": "A detailed guide on how to use the ZSim simulator",
     "load_error": "Failed to load documentation, please try again later.",
     "load_error_console": "Failed to load documentation:"
+  },
+  "common": {
+    "ok": "OK"
+  },
+  "login": {
+    "account_login": "Account Login",
+    "email_login": "Email Login", 
+    "create_account": "Create Account",
+    "account_login_subtitle": "Login with username and password",
+    "email_login_subtitle": "Login with email and verification code",
+    "create_account_subtitle": "Create a new account",
+    "username": "Username",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "email": "Email",
+    "verification_code": "Verification Code",
+    "login_button": "Login",
+    "register_button": "Register",
+    "logging_in": "Logging in...",
+    "registering": "Registering...",
+    "get_code": "Get Code",
+    "sending": "Sending...",
+    "resend": "Resend in {count}s",
+    "register_account": "Register Account",
+    "back_to_login": "Back to Login",
+    "fill_all_fields": "Please fill in all required fields",
+    "password_mismatch": "Password and confirm password do not match",
+    "invalid_email": "Please enter a valid email address",
+    "invalid_code": "Please enter a 6-digit verification code",
+    "login_failed": "Login failed",
+    "register_failed": "Registration failed",
+    "network_error": "Network connection lost or service offline",
+    "network_error_simple": "Network error",
+    "code_send_failed": "Failed to send verification code"
   }
 }

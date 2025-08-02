@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios';
 import { useI18n } from 'vue-i18n';
+import ToastNotification from './ToastNotification.vue';
 
 const { t, locale } = useI18n();
 
@@ -25,6 +26,7 @@ interface Character {
 const characters = ref<Character[]>([])
 const votedCharacterIds = ref<number[]>([]);
 const token = ref(localStorage.getItem('token') || ''); // 从localStorage获取token
+const toastRef = ref<InstanceType<typeof ToastNotification>>();
 
 async function fetchCharacters() {
   try {
@@ -50,7 +52,7 @@ async function fetchUserVotes() {
 
 async function handleVote(character: Character) {
   if (!token.value) {
-    alert(t('vote.login_to_vote'));
+    toastRef.value?.showToast(t('vote.login_to_vote'));
     // 这里可以引导用户去登录页面
     return;
   }
@@ -63,10 +65,10 @@ async function handleVote(character: Character) {
     votedCharacterIds.value = [...votedCharacterIds.value, character.id];
   } catch (error: any) {
     if (error.response && error.response.data.detail) {
-      alert(error.response.data.detail);
+      toastRef.value?.showToast(error.response.data.detail);
     } else {
       console.error('投票失败:', error);
-      alert(t('vote.vote_failed'));
+      toastRef.value?.showToast(t('vote.vote_failed'));
     }
   }
 }
@@ -122,6 +124,8 @@ onMounted(() => {
         </div>
       </transition>
     </div>
+    
+    <ToastNotification ref="toastRef" />
   </div>
 </template>
 
@@ -132,6 +136,7 @@ onMounted(() => {
   padding: 2rem 1rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   animation: fadeInPage 0.5s ease-in-out;
+  min-height: 100vh;
 }
 
 @keyframes fadeInPage {
@@ -193,7 +198,29 @@ onMounted(() => {
 
 .vote-content {
   min-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
 }
+
+.vote-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.vote-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.vote-content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 4px;
+  border: 2px solid transparent;
+}
+
+.vote-content::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-light);
+}
+
 
 .character-grid {
   display: grid;

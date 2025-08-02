@@ -47,7 +47,9 @@ onMounted(async () => {
 
     <main class="content-container">
       <div class="version-display">
-        {{ t('downloads.latest_version') }} <strong><a :href="latestRelease?.release_page_url || 'https://github.com/ZZZSimulator/ZSim/releases/latest'" target="_blank">{{ latestRelease?.version || t('downloads.loading') }}</a></strong>
+        {{ t('downloads.latest_version') }} <strong><a
+            :href="latestRelease?.release_page_url || 'https://github.com/ZZZSimulator/ZSim/releases/latest'"
+            target="_blank">{{ latestRelease?.version || t('downloads.loading') }}</a></strong>
       </div>
 
       <div class="actions-container">

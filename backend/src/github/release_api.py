@@ -5,7 +5,7 @@ import httpx
 from pydantic import BaseModel
 
 # --- Configuration ---
-REPO_OWNER = "ZZZSimulator"
+REPO_OWNER = "ZSim-Dev"
 REPO_NAME = "ZSim"
 API_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/releases/latest"
 
@@ -38,7 +38,7 @@ async def _fetch_and_update_cache():
     global _latest_release_cache
     expired_at = _latest_release_cache.expired_at
     time_stamp_now = int(datetime.datetime.now().timestamp())
-    if expired_at > 0 and expired_at < time_stamp_now:
+    if expired_at > 0 and expired_at > time_stamp_now:
         return
     try:
         print("[GitHub] Fetching latest release...")
@@ -55,7 +55,7 @@ async def _fetch_and_update_cache():
                 asset_url = asset.get("browser_download_url")
                 break
 
-        if not is_prerelease and asset_url:
+        if not is_prerelease:
             _latest_release_cache = LatestReleaseCache(
                 version=data.get("tag_name", "N/A"),
                 download_url=asset_url,
