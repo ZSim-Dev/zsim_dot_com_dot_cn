@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a full-stack web application with a Vue 3 frontend and a Python FastAPI backend:
 
-- `ZsimWebPage/` - Frontend Vue 3 application
+- `frontend/` - Frontend Vue 3 application
 - `backend/` - Python FastAPI backend API
 - `cct.ps1` - PowerShell script (likely for deployment or setup)
 

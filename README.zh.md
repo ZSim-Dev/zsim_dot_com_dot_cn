@@ -20,7 +20,7 @@
 
 ### 前端 (Vue 3)
 ```bash
-cd ZsimWebPage
+cd frontend
 npm install
 npm run dev
 ```
@@ -34,8 +34,8 @@ python main.py
 
 ## 文档
 
-- [中文快速入门指南](./ZsimWebPage/docs/doc.zh.md)
-- [English Quick Start Guide](./ZsimWebPage/docs/doc.en.md)
+- [中文快速入门指南](./frontend/docs/doc.zh.md)
+- [English Quick Start Guide](./frontend/docs/doc.en.md)
 
 ## 许可证
 
