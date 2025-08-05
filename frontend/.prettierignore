@@ -1,0 +1,13 @@
+# Ignore artifacts:
+build
+dist
+.turbo
+.vercel
+
+# Ignore lockfiles
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Ignore node_modules
+node_modules

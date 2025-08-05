@@ -10,11 +10,11 @@ const app = createApp(App)
 app.use(router)
 app.use(i18n)
 
-const userPreferredLocale = localStorage.getItem('locale') || 'zh';
+const userPreferredLocale = localStorage.getItem('locale') || 'zh'
 
 async function initializeApp() {
-  await loadLocaleMessages(userPreferredLocale);
-  app.mount('#app');
+  await loadLocaleMessages(userPreferredLocale)
+  app.mount('#app')
 }
 
-initializeApp();
+initializeApp()

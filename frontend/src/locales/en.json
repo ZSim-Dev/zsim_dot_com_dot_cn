@@ -50,7 +50,7 @@
   },
   "login": {
     "account_login": "Account Login",
-    "email_login": "Email Login", 
+    "email_login": "Email Login",
     "create_account": "Create Account",
     "account_login_subtitle": "Login with username and password",
     "email_login_subtitle": "Login with email and verification code",

@@ -50,7 +50,7 @@
   },
   "login": {
     "account_login": "账号登录",
-    "email_login": "邮箱登录", 
+    "email_login": "邮箱登录",
     "create_account": "创建账号",
     "account_login_subtitle": "使用用户名和密码登录",
     "email_login_subtitle": "使用邮箱和验证码登录",

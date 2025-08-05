@@ -61,22 +61,22 @@
   --downloads-history-item-border: #f0f0f0;
 
   /* Login Page Apple Design System Colors */
-  --apple-blue: #007AFF;
-  --apple-blue-hover: #0056CC;
-  --apple-gray: #8E8E93;
-  --apple-gray-light: #F2F2F7;
-  --apple-gray-dark: #1C1C1E;
-  --apple-red: #FF3B30;
-  --apple-green: #34C759;
-  --apple-background: #FFFFFF;
-  --apple-surface: #F9F9F9;
-  --apple-border: #D1D1D6;
+  --apple-blue: #007aff;
+  --apple-blue-hover: #0056cc;
+  --apple-gray: #8e8e93;
+  --apple-gray-light: #f2f2f7;
+  --apple-gray-dark: #1c1c1e;
+  --apple-red: #ff3b30;
+  --apple-green: #34c759;
+  --apple-background: #ffffff;
+  --apple-surface: #f9f9f9;
+  --apple-border: #d1d1d6;
   --apple-text: #000000;
-  --apple-text-secondary: #6D6D70;
-  --apple-input-bg: #FFFFFF;
-  --apple-input-focus-bg: #FFFFFF;
-  --apple-input-border: #C7C7CC;
-  --apple-input-border-focus: #007AFF;
+  --apple-text-secondary: #6d6d70;
+  --apple-input-bg: #ffffff;
+  --apple-input-focus-bg: #ffffff;
+  --apple-input-border: #c7c7cc;
+  --apple-input-border-focus: #007aff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -116,17 +116,17 @@
     --downloads-history-item-border: var(--color-border);
 
     /* Login Page Apple Design System Colors (Dark Mode) */
-    --apple-background: #1C1C1E;
-    --apple-surface: #2C2C2E;
-    --apple-border: #48484A;
-    --apple-text: #FFFFFF;
-    --apple-text-secondary: #98989D;
-    --apple-gray: #8E8E93;
-    --apple-gray-light: #2C2C2E;
-    --apple-input-bg: #2C2C2E;
-    --apple-input-focus-bg: #3A3A3C;
-    --apple-input-border: #5A5A5E;
-    --apple-input-border-focus: #007AFF;
+    --apple-background: #1c1c1e;
+    --apple-surface: #2c2c2e;
+    --apple-border: #48484a;
+    --apple-text: #ffffff;
+    --apple-text-secondary: #98989d;
+    --apple-gray: #8e8e93;
+    --apple-gray-light: #2c2c2e;
+    --apple-input-bg: #2c2c2e;
+    --apple-input-focus-bg: #3a3a3c;
+    --apple-input-border: #5a5a5e;
+    --apple-input-border-focus: #007aff;
   }
 }
 
@@ -147,17 +147,8 @@ body {
     background-color 0.5s;
   line-height: 1.6;
   font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

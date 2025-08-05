@@ -1,78 +1,77 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+  import { onMounted, ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
 
-const { t, locale } = useI18n()
-const router = useRouter()
-const menuOpen = ref(false)
+  const { t, locale } = useI18n()
+  const router = useRouter()
+  const menuOpen = ref(false)
 
-const menuItems = [
-  { label: 'message.home', action: () => goHome() },
-  { label: 'message.download', action: () => goTo('/downloads') },
-  { label: 'message.docs', action: () => goTo('/docs') },
-  { label: 'message.vote', action: () => goTo('/vote') }
-]
+  const menuItems = [
+    { label: 'message.home', action: () => goHome() },
+    { label: 'message.download', action: () => goTo('/downloads') },
+    { label: 'message.docs', action: () => goTo('/docs') },
+    { label: 'message.vote', action: () => goTo('/vote') },
+  ]
 
-function goHome() {
-  router.push({ name: 'Home' })
-  menuOpen.value = false
-}
-
-function goTo(url: string) {
-  if (url.startsWith('http')) {
-    window.open(url, '_blank')
-  } else {
-    router.push(url)
+  function goHome() {
+    router.push({ name: 'Home' })
+    menuOpen.value = false
   }
-  menuOpen.value = false
-}
 
-// 登录状态管理
-const user = ref<string | null>(null)
-const token = ref<string | null>(null)
+  function goTo(url: string) {
+    if (url.startsWith('http')) {
+      window.open(url, '_blank')
+    } else {
+      router.push(url)
+    }
+    menuOpen.value = false
+  }
 
-function logout() {
-  user.value = null
-  token.value = null
-  localStorage.removeItem('user')
-  localStorage.removeItem('token')
-  menuOpen.value = false
-  window.location.reload()
-}
+  // 登录状态管理
+  const user = ref<string | null>(null)
+  const token = ref<string | null>(null)
 
-async function fetchUser() {
-  if (!token.value) return
-  const res = await fetch(`/api/me`, {
-    headers: { Authorization: `Bearer ${token.value}` }
-  })
-  if (res.ok) {
-    const data = await res.json()
-    user.value = data.username
-    localStorage.setItem('user', user.value)
-  } else {
+  function logout() {
     user.value = null
+    token.value = null
     localStorage.removeItem('user')
     localStorage.removeItem('token')
-    token.value = null
-  }
-}
-
-import { loadLocaleMessages } from './i18n';
-
-async function switchLanguage(lang: string) {
-  await loadLocaleMessages(lang);
-  localStorage.setItem('locale', lang);
-}
-
-onMounted(() => {
-  const t = localStorage.getItem('token')
-  if (t) {
-    token.value = t
-    fetchUser()
+    menuOpen.value = false
+    window.location.reload()
   }
 
-})
+  async function fetchUser() {
+    if (!token.value) return
+    const res = await fetch(`/api/me`, {
+      headers: { Authorization: `Bearer ${token.value}` },
+    })
+    if (res.ok) {
+      const data = await res.json()
+      user.value = data.username
+      localStorage.setItem('user', user.value)
+    } else {
+      user.value = null
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+      token.value = null
+    }
+  }
+
+  import { loadLocaleMessages } from './i18n'
+
+  async function switchLanguage(lang: string) {
+    await loadLocaleMessages(lang)
+    localStorage.setItem('locale', lang)
+  }
+
+  onMounted(() => {
+    const t = localStorage.getItem('token')
+    if (t) {
+      token.value = t
+      fetchUser()
+    }
+  })
 </script>
 
 <template>
@@ -83,47 +82,56 @@ onMounted(() => {
       <span class="bar"></span>
       <span class="bar"></span>
     </button>
-    <div class="header-left" @click="goHome" style="cursor:pointer;">
+    <div class="header-left" @click="goHome" style="cursor: pointer">
       <img src="/assets/zsim-logo.svg" alt="logo" class="logo" />
       <span class="zsim-title">{{ t('message.nav-title') }}</span>
     </div>
     <!-- 普通菜单，大屏显示 -->
     <nav class="header-menu">
-      <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">{{ t(item.label) }}</button>
+      <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">
+        {{ t(item.label) }}
+      </button>
     </nav>
-      <div class="header-right">
-        <button class="github-btn desktop-only" @click="goTo('https://github.com/ZZZSimulator/ZSim')">
-          <svg t="1717920000000" class="github-icon" viewBox="0 0 1024 1024" width="24" height="24">
-            <path
-              d="M511.6 76.3C264.6 76.3 64 277.5 64 525.2c0 198.1 128.5 366.2 306.7 425.8 22.4 4.1 30.6-9.7 30.6-21.5 0-10.6-0.4-45.5-0.6-82.5-124.8 27.1-151.2-60.2-151.2-60.2-20.4-51.8-49.8-65.6-49.8-65.6-40.7-27.8 3.1-27.2 3.1-27.2 45 3.2 68.7 46.2 68.7 46.2 40 68.6 104.9 48.8 130.5 37.3 4.1-29 15.7-48.8 28.6-60-99.7-11.3-204.5-49.8-204.5-221.8 0-49 17.5-89 46.2-120.4-4.6-11.3-20-56.8 4.4-118.5 0 0 37.6-12.1 123.2 46.1 35.7-9.9 74-14.8 112.1-15 38 0.2 76.4 5.1 112.1 15 85.5-58.2 123.1-46.1 123.1-46.1 24.5 61.7 9.1 107.2 4.5 118.5 28.8 31.4 46.1 71.4 46.1 120.4 0 172.4-104.9 210.4-204.9 221.5 16.1 13.9 30.4 41.3 30.4 83.3 0 60.2-0.5 108.7-0.5 123.5 0 11.9 8 25.8 30.7 21.4C831.6 891.2 960 723.2 960 525.2c0-247.7-200.6-448.9-448.4-448.9z"
-              fill="currentColor" />
-          </svg>
-        </button>
-        <div class="language-switcher">
-          <button @click="switchLanguage('zh')" :class="{ 'active': locale === 'zh' }">中</button>
-          <button @click="switchLanguage('en')" :class="{ 'active': locale === 'en' }">EN</button>
-        </div>
-        <div class="desktop-only">
-          <template v-if="user">
-            <span class="user-info">{{ t('message.hello') }}，{{ user }}</span>
-            <button class="login-btn" @click="logout">{{ t('message.logout') }}</button>
-          </template>
-          <template v-else>
-            <button class="login-btn" @click="router.push('/login')">{{ t('message.login') }}</button>
-          </template>
-        </div>
+    <div class="header-right">
+      <button class="github-btn desktop-only" @click="goTo('https://github.com/ZZZSimulator/ZSim')">
+        <svg t="1717920000000" class="github-icon" viewBox="0 0 1024 1024" width="24" height="24">
+          <path
+            d="M511.6 76.3C264.6 76.3 64 277.5 64 525.2c0 198.1 128.5 366.2 306.7 425.8 22.4 4.1 30.6-9.7 30.6-21.5 0-10.6-0.4-45.5-0.6-82.5-124.8 27.1-151.2-60.2-151.2-60.2-20.4-51.8-49.8-65.6-49.8-65.6-40.7-27.8 3.1-27.2 3.1-27.2 45 3.2 68.7 46.2 68.7 46.2 40 68.6 104.9 48.8 130.5 37.3 4.1-29 15.7-48.8 28.6-60-99.7-11.3-204.5-49.8-204.5-221.8 0-49 17.5-89 46.2-120.4-4.6-11.3-20-56.8 4.4-118.5 0 0 37.6-12.1 123.2 46.1 35.7-9.9 74-14.8 112.1-15 38 0.2 76.4 5.1 112.1 15 85.5-58.2 123.1-46.1 123.1-46.1 24.5 61.7 9.1 107.2 4.5 118.5 28.8 31.4 46.1 71.4 46.1 120.4 0 172.4-104.9 210.4-204.9 221.5 16.1 13.9 30.4 41.3 30.4 83.3 0 60.2-0.5 108.7-0.5 123.5 0 11.9 8 25.8 30.7 21.4C831.6 891.2 960 723.2 960 525.2c0-247.7-200.6-448.9-448.4-448.9z"
+            fill="currentColor"
+          />
+        </svg>
+      </button>
+      <div class="language-switcher">
+        <button @click="switchLanguage('zh')" :class="{ active: locale === 'zh' }">中</button>
+        <button @click="switchLanguage('en')" :class="{ active: locale === 'en' }">EN</button>
       </div>
+      <div class="desktop-only">
+        <template v-if="user">
+          <span class="user-info">{{ t('message.hello') }}，{{ user }}</span>
+          <button class="login-btn" @click="logout">{{ t('message.logout') }}</button>
+        </template>
+        <template v-else>
+          <button class="login-btn" @click="router.push('/login')">{{ t('message.login') }}</button>
+        </template>
+      </div>
+    </div>
     <!-- 弹出菜单，小屏显示 -->
     <transition name="mobile-menu-fade">
       <div v-if="menuOpen" class="mobile-menu" @click.self="menuOpen = false">
-        <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">{{ t(item.label) }}</button>
+        <button v-for="item in menuItems" :key="item.label" class="menu-btn" @click="item.action">
+          {{ t(item.label) }}
+        </button>
         <div class="mobile-menu-divider"></div>
         <template v-if="user">
           <div class="mobile-user-info">{{ t('message.hello') }}，{{ user }}</div>
-          <button class="menu-btn mobile-logout-btn" @click="logout">{{ t('message.logout') }}</button>
+          <button class="menu-btn mobile-logout-btn" @click="logout">
+            {{ t('message.logout') }}
+          </button>
         </template>
         <template v-else>
-          <button class="menu-btn mobile-login-btn" @click="goTo('/login')">{{ t('message.login') }}</button>
+          <button class="menu-btn mobile-login-btn" @click="goTo('/login')">
+            {{ t('message.login') }}
+          </button>
         </template>
       </div>
     </transition>
@@ -136,329 +144,341 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.zsim-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  height: 56px;
-  padding: 0 16px;
-  background: var(--header-bg);
-  border-bottom: 1px solid var(--header-border);
-  box-shadow: 0 2px 8px var(--header-shadow);
-  position: relative;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.fixed-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  z-index: 100;
-}
-
-.main-content {
-  padding-top: 56px;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  margin-right: 0;
-  padding-left: 12px;
-}
-
-.logo {
-  width: 32px;
-  height: 32px;
-  margin-right: 10px;
-}
-
-.zsim-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--text-primary);
-  letter-spacing: 1px;
-  transition: color 0.3s ease;
-}
-
-.header-menu {
-  display: flex;
-  padding-left: 28px;
-  margin-left: 0;
-  gap: 0;
-}
-
-.menu-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 4px;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-.menu-btn+.menu-btn {
-  margin-left: 8px;
-}
-
-.menu-btn:hover {
-  background: var(--hover-bg);
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  gap: 8px;
-}
-
-.user-info {
-  margin: 0 8px;
-  color: var(--text-secondary);
-  font-size: 15px;
-  transition: color 0.3s ease;
-}
-
-.login-btn {
-  background: var(--button-bg);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 16px;
-  margin-left: 4px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: background 0.3s ease;
-}
-
-.login-btn.cancel {
-  background: #aaa;
-  color: #fff;
-}
-
-.login-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.login-btn:hover:not(:disabled) {
-  background: var(--button-hover);
-}
-
-.github-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 50%;
-  transition: background 0.3s ease;
-  color: var(--github-fill);
-}
-
-.github-btn:hover {
-  background: var(--hover-bg);
-}
-
-.github-icon {
-  display: block;
-}
-
-.language-switcher {
-  display: flex;
-  align-items: center;
-  margin-left: 8px;
-  background-color: var(--color-background-mute);
-  border-radius: 16px;
-  padding: 4px;
-}
-
-.language-switcher button {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 14px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.language-switcher button.active {
-  background-color: var(--color-background);
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-/* 主题切换按钮样式 */
-.theme-toggle-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 50%;
-  transition: background 0.3s ease, transform 0.2s ease;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 8px;
-}
-
-.theme-toggle-btn:hover {
-  background: var(--hover-bg);
-  transform: scale(1.1);
-}
-
-.theme-icon {
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-.theme-toggle-btn:active .theme-icon {
-  transform: rotate(180deg);
-}
-
-/* 汉堡按钮样式 */
-.menu-toggle {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 36px;
-  height: 36px;
-  background: none;
-  border: none;
-  margin-left: 8px;
-  cursor: pointer;
-  z-index: 110;
-}
-
-.menu-toggle .bar {
-  width: 22px;
-  height: 2px;
-  background: var(--text-primary);
-  color: var(--text-primary);
-  margin: 3px 0;
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-/* 移动端弹出菜单 */
-.mobile-menu {
-  position: absolute;
-  top: 56px;
-  left: 0;
-  width: 100vw;
-  background: var(--header-bg);
-  box-shadow: 0 2px 8px var(--header-shadow);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 12px 0;
-  z-index: 120;
-  border-bottom: 1px solid var(--header-border);
-  transition: background-color 0.3s ease;
-}
-
-.mobile-menu .menu-btn {
-  width: 100%;
-  text-align: left;
-  padding: 10px 24px;
-  font-size: 18px;
-  border-radius: 0;
-  margin: 0;
-}
-
-.mobile-menu-divider {
-  width: 100%;
-  height: 1px;
-  background: var(--header-border);
-  margin: 8px 0;
-}
-
-.mobile-user-info {
-  width: 100%;
-  text-align: left;
-  padding: 10px 24px;
-  font-size: 16px;
-  color: var(--text-secondary);
-}
-
-.mobile-login-btn,
-.mobile-logout-btn {
-  width: 100%;
-  text-align: left;
-  padding: 10px 24px;
-  font-size: 16px;
-  border-radius: 0;
-  margin: 0;
-  background: var(--button-bg);
-  color: #fff;
-}
-
-.mobile-login-btn:hover,
-.mobile-logout-btn:hover {
-  background: var(--button-hover);
-}
-
-/* 动画样式 */
-.mobile-menu-fade-enter-active,
-.mobile-menu-fade-leave-active {
-  transition: opacity 0.25s, transform 0.25s;
-}
-
-.mobile-menu-fade-enter-from,
-.mobile-menu-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-16px);
-}
-
-.mobile-menu-fade-enter-to,
-.mobile-menu-fade-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.fade-page-enter-active,
-.fade-page-leave-active {
-  transition: opacity 0.4s cubic-bezier(.4, 0, .2, 1), transform 0.4s cubic-bezier(.4, 0, .2, 1);
-}
-
-.fade-page-enter-from,
-.fade-page-leave-to {
-  opacity: 0;
-  transform: translateY(24px);
-}
-
-.fade-page-enter-to,
-.fade-page-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* 响应式：小于720px时调整布局 */
-@media (max-width: 720px) {
-  .header-menu {
-    display: none;
+  .zsim-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 56px;
+    padding: 0 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--header-border);
+    box-shadow: 0 2px 8px var(--header-shadow);
+    position: relative;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease;
   }
 
-  .menu-toggle {
-    display: flex;
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 100;
+  }
+
+  .main-content {
+    padding-top: 56px;
   }
 
   .header-left {
+    display: flex;
+    align-items: center;
     margin-right: 0;
+    padding-left: 12px;
+  }
+
+  .logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+  }
+
+  .zsim-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+  }
+
+  .header-menu {
+    display: flex;
+    padding-left: 28px;
+    margin-left: 0;
+    gap: 0;
+  }
+
+  .menu-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition:
+      background 0.3s ease,
+      color 0.3s ease;
+  }
+
+  .menu-btn + .menu-btn {
+    margin-left: 8px;
+  }
+
+  .menu-btn:hover {
+    background: var(--hover-bg);
   }
 
   .header-right {
+    display: flex;
+    align-items: center;
     margin-left: auto;
+    gap: 8px;
   }
 
-  .desktop-only {
-    display: none;
+  .user-info {
+    margin: 0 8px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    transition: color 0.3s ease;
   }
-}
+
+  .login-btn {
+    background: var(--button-bg);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 16px;
+    margin-left: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.3s ease;
+  }
+
+  .login-btn.cancel {
+    background: #aaa;
+    color: #fff;
+  }
+
+  .login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .login-btn:hover:not(:disabled) {
+    background: var(--button-hover);
+  }
+
+  .github-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+    color: var(--github-fill);
+  }
+
+  .github-btn:hover {
+    background: var(--hover-bg);
+  }
+
+  .github-icon {
+    display: block;
+  }
+
+  .language-switcher {
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    background-color: var(--color-background-mute);
+    border-radius: 16px;
+    padding: 4px;
+  }
+
+  .language-switcher button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 14px;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+
+  .language-switcher button.active {
+    background-color: var(--color-background);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* 主题切换按钮样式 */
+  .theme-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    transition:
+      background 0.3s ease,
+      transform 0.2s ease;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+  }
+
+  .theme-toggle-btn:hover {
+    background: var(--hover-bg);
+    transform: scale(1.1);
+  }
+
+  .theme-icon {
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .theme-toggle-btn:active .theme-icon {
+    transform: rotate(180deg);
+  }
+
+  /* 汉堡按钮样式 */
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    margin-left: 8px;
+    cursor: pointer;
+    z-index: 110;
+  }
+
+  .menu-toggle .bar {
+    width: 22px;
+    height: 2px;
+    background: var(--text-primary);
+    color: var(--text-primary);
+    margin: 3px 0;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* 移动端弹出菜单 */
+  .mobile-menu {
+    position: absolute;
+    top: 56px;
+    left: 0;
+    width: 100vw;
+    background: var(--header-bg);
+    box-shadow: 0 2px 8px var(--header-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 0;
+    z-index: 120;
+    border-bottom: 1px solid var(--header-border);
+    transition: background-color 0.3s ease;
+  }
+
+  .mobile-menu .menu-btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px 24px;
+    font-size: 18px;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .mobile-menu-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--header-border);
+    margin: 8px 0;
+  }
+
+  .mobile-user-info {
+    width: 100%;
+    text-align: left;
+    padding: 10px 24px;
+    font-size: 16px;
+    color: var(--text-secondary);
+  }
+
+  .mobile-login-btn,
+  .mobile-logout-btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px 24px;
+    font-size: 16px;
+    border-radius: 0;
+    margin: 0;
+    background: var(--button-bg);
+    color: #fff;
+  }
+
+  .mobile-login-btn:hover,
+  .mobile-logout-btn:hover {
+    background: var(--button-hover);
+  }
+
+  /* 动画样式 */
+  .mobile-menu-fade-enter-active,
+  .mobile-menu-fade-leave-active {
+    transition:
+      opacity 0.25s,
+      transform 0.25s;
+  }
+
+  .mobile-menu-fade-enter-from,
+  .mobile-menu-fade-leave-to {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+
+  .mobile-menu-fade-enter-to,
+  .mobile-menu-fade-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-page-enter-active,
+  .fade-page-leave-active {
+    transition:
+      opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .fade-page-enter-from,
+  .fade-page-leave-to {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .fade-page-enter-to,
+  .fade-page-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 响应式：小于720px时调整布局 */
+  @media (max-width: 720px) {
+    .header-menu {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: flex;
+    }
+
+    .header-left {
+      margin-right: 0;
+    }
+
+    .header-right {
+      margin-left: auto;
+    }
+
+    .desktop-only {
+      display: none;
+    }
+  }
 </style>
