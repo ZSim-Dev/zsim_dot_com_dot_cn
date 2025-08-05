@@ -243,6 +243,22 @@
     verificationCode.value = ''
     countdown.value = 0
   }
+
+  // Login mode switch handlers
+  function switchToLoginMode() {
+    mode.value = 'login'
+    loginError.value = ''
+    username.value = ''
+    password.value = ''
+  }
+
+  function switchToEmailMode() {
+    mode.value = 'email'
+    loginError.value = ''
+    email.value = ''
+    verificationCode.value = ''
+    countdown.value = 0
+  }
 </script>
 
 <template>
@@ -400,24 +416,13 @@
         <div v-if="mode !== 'register'" class="login-mode-switch">
           <button
             :class="['mode-btn', { active: mode === 'login' }]"
-            @click="
-              mode = 'login'
-              loginError = ''
-              username = ''
-              password = ''
-            "
+            @click="switchToLoginMode"
           >
             {{ t('login.account_login') }}
           </button>
           <button
             :class="['mode-btn', { active: mode === 'email' }]"
-            @click="
-              mode = 'email'
-              loginError = ''
-              email = ''
-              verificationCode = ''
-              countdown = 0
-            "
+            @click="switchToEmailMode"
           >
             {{ t('login.email_login') }}
           </button>
