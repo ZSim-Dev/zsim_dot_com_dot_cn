@@ -1,0 +1,15 @@
+[aliyun]
+access_key_id = "your_access_key_id_here"
+access_key_secret = "your_access_key_secret_here"
+
+[aliyun.email]
+smtp_host = "smtpdm.aliyun.com"
+smtp_port = 465
+smtp_username = "noreply@zsim.com.cn"
+smtp_password = "your_smtp_password_here"
+smtp_from = "noreply@zsim.com.cn"
+send_real_email = true
+
+[database]
+auth_db_path = "./.database/auth.db"
+vote_db_path = "./.database/vote.db"
