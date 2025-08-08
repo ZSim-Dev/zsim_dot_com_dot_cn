@@ -2,8 +2,9 @@
   import { onMounted, ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
+  import LanguageSwitcher from './components/LanguageSwitcher.vue'
 
-  const { t, locale } = useI18n()
+  const { t } = useI18n()
   const router = useRouter()
   const menuOpen = ref(false)
 
@@ -58,13 +59,6 @@
     }
   }
 
-  import { loadLocaleMessages } from './i18n'
-
-  async function switchLanguage(lang: string) {
-    await loadLocaleMessages(lang)
-    localStorage.setItem('locale', lang)
-  }
-
   onMounted(() => {
     const t = localStorage.getItem('token')
     if (t) {
@@ -101,10 +95,7 @@
           />
         </svg>
       </button>
-      <div class="language-switcher">
-        <button @click="switchLanguage('zh')" :class="{ active: locale === 'zh' }">中</button>
-        <button @click="switchLanguage('en')" :class="{ active: locale === 'en' }">EN</button>
-      </div>
+      <LanguageSwitcher />
       <div class="desktop-only">
         <template v-if="user">
           <span class="user-info">{{ t('message.hello') }}，{{ user }}</span>
@@ -276,34 +267,6 @@
 
   .github-icon {
     display: block;
-  }
-
-  .language-switcher {
-    display: flex;
-    align-items: center;
-    margin-left: 8px;
-    background-color: var(--color-background-mute);
-    border-radius: 16px;
-    padding: 4px;
-  }
-
-  .language-switcher button {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 14px;
-    transition:
-      background-color 0.3s,
-      color 0.3s;
-  }
-
-  .language-switcher button.active {
-    background-color: var(--color-background);
-    color: var(--text-primary);
-    font-weight: 600;
   }
 
   /* 主题切换按钮样式 */
