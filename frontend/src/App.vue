@@ -83,7 +83,7 @@
       <span class="bar"></span>
     </button>
     <div class="header-left" @click="goHome" style="cursor: pointer">
-      <img src="/assets/zsim-logo.svg" alt="logo" class="logo" />
+      <img src="/zsim-logo.svg" alt="logo" class="logo" />
       <span class="zsim-title">{{ t('message.nav-title') }}</span>
     </div>
     <!-- 普通菜单，大屏显示 -->
