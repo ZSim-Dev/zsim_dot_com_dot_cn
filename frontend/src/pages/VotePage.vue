@@ -2,7 +2,7 @@
   import { ref, onMounted, computed } from 'vue'
   import axios from 'axios'
   import { useI18n } from 'vue-i18n'
-  import ToastNotification from './ToastNotification.vue'
+  import ToastNotification from '../components/ToastNotification.vue'
 
   const { t, locale } = useI18n()
 

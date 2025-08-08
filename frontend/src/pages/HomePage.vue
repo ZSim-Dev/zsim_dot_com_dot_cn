@@ -8,7 +8,7 @@
   <div class="homepage">
     <div class="header">
       <div class="logo">
-        <img src="/assets/zsim-logo.svg" alt="logo" class="logo" />
+        <img src="/zsim-logo.svg" alt="logo" class="logo" />
       </div>
       <p class="title">{{ t('message.title') }}</p>
       <p class="description">{{ t('message.description') }}</p>
