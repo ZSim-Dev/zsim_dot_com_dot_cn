@@ -153,6 +153,10 @@ defineExpose({
   background: var(--button-hover);
 }
 
+.mobile-auth {
+  width: 100%;
+}
+
 .mobile-user-info {
   width: 100%;
   text-align: left;
