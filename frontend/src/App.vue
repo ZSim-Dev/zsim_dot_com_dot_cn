@@ -17,7 +17,7 @@
   ]
 
   function goHome() {
-    router.push("/")
+    router.push('/')
     menuOpen.value = false
   }
 
@@ -73,9 +73,11 @@
     </transition>
   </header>
   <div class="main-content">
-    <transition name="fade-page" mode="out-in">
-      <router-view />
-    </transition>
+    <router-view #="{ Component }">
+      <transition name="fade-page" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
