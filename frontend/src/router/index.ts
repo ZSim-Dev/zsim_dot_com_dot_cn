@@ -1,35 +1,35 @@
 import { createRouter, createWebHistory } from 'vue-router'
-const Home = () => import('../components/Home.vue')
-const DocsView = () => import('../components/DocsView.vue')
-const LoginView = () => import('../components/LoginView.vue')
-const VoteView = () => import('../components/VoteView.vue')
-const Downloads = () => import('../components/Downloads.vue')
+const HomePage = () => import('../pages/HomePage.vue')
+const DocsPage = () => import('../pages/DocsPage.vue')
+const LoginPage = () => import('../pages/LoginPage.vue')
+const VotePage = () => import('../pages/VotePage.vue')
+const DownloadsPage = () => import('../pages/DownloadsPage.vue')
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'HomePage',
+    component: HomePage,
   },
   {
     path: '/docs',
-    name: 'DocsView',
-    component: DocsView,
+    name: 'DocsPage',
+    component: DocsPage,
   },
   {
     path: '/login',
-    name: 'LoginView',
-    component: LoginView,
+    name: 'LoginPage',
+    component: LoginPage,
   },
   {
     path: '/vote',
-    name: 'VoteView',
-    component: VoteView,
+    name: 'VotePage',
+    component: VotePage,
   },
   {
     path: '/downloads',
-    name: 'Downloads',
-    component: Downloads,
+    name: 'DownloadsPage',
+    component: DownloadsPage,
   },
 ]
 
