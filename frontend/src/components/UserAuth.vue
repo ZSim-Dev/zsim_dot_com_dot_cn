@@ -10,7 +10,6 @@
         <button class="login-btn" @click="goToLogin">{{ t('message.login') }}</button>
       </template>
     </div>
-
     <!-- 移动端用户认证 -->
     <div class="mobile-auth" v-if="showMobileAuth">
       <template v-if="user">

@@ -5,9 +5,11 @@
 <template>
   <Header />
   <div class="main-content">
-    <transition name="fade-page" mode="out-in">
-      <router-view />
-    </transition>
+    <router-view #="{ Component }">
+      <transition name="fade-page" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
