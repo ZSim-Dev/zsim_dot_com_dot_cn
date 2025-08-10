@@ -3,6 +3,7 @@
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import LanguageSwitcher from './components/LanguageSwitcher.vue'
+  import UserAuth from './components/UserAuth.vue'
 
   const { t } = useI18n()
   const router = useRouter()
@@ -16,7 +17,7 @@
   ]
 
   function goHome() {
-    router.push({ name: 'Home' })
+    router.push("/")
     menuOpen.value = false
   }
 
@@ -28,44 +29,6 @@
     }
     menuOpen.value = false
   }
-
-  // 登录状态管理
-  const user = ref<string | null>(null)
-  const token = ref<string | null>(null)
-
-  function logout() {
-    user.value = null
-    token.value = null
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
-    menuOpen.value = false
-    window.location.reload()
-  }
-
-  async function fetchUser() {
-    if (!token.value) return
-    const res = await fetch(`/api/me`, {
-      headers: { Authorization: `Bearer ${token.value}` },
-    })
-    if (res.ok) {
-      const data = await res.json()
-      user.value = data.username
-      localStorage.setItem('user', user.value)
-    } else {
-      user.value = null
-      localStorage.removeItem('user')
-      localStorage.removeItem('token')
-      token.value = null
-    }
-  }
-
-  onMounted(() => {
-    const t = localStorage.getItem('token')
-    if (t) {
-      token.value = t
-      fetchUser()
-    }
-  })
 </script>
 
 <template>
@@ -96,15 +59,7 @@
         </svg>
       </button>
       <LanguageSwitcher />
-      <div class="desktop-only">
-        <template v-if="user">
-          <span class="user-info">{{ t('message.hello') }}，{{ user }}</span>
-          <button class="login-btn" @click="logout">{{ t('message.logout') }}</button>
-        </template>
-        <template v-else>
-          <button class="login-btn" @click="router.push('/login')">{{ t('message.login') }}</button>
-        </template>
-      </div>
+      <UserAuth @close-menu="menuOpen = false" />
     </div>
     <!-- 弹出菜单，小屏显示 -->
     <transition name="mobile-menu-fade">
@@ -113,17 +68,7 @@
           {{ t(item.label) }}
         </button>
         <div class="mobile-menu-divider"></div>
-        <template v-if="user">
-          <div class="mobile-user-info">{{ t('message.hello') }}，{{ user }}</div>
-          <button class="menu-btn mobile-logout-btn" @click="logout">
-            {{ t('message.logout') }}
-          </button>
-        </template>
-        <template v-else>
-          <button class="menu-btn mobile-login-btn" @click="goTo('/login')">
-            {{ t('message.login') }}
-          </button>
-        </template>
+        <UserAuth show-mobile-auth @close-menu="menuOpen = false" />
       </div>
     </transition>
   </header>
@@ -216,39 +161,6 @@
     align-items: center;
     margin-left: auto;
     gap: 8px;
-  }
-
-  .user-info {
-    margin: 0 8px;
-    color: var(--text-secondary);
-    font-size: 15px;
-    transition: color 0.3s ease;
-  }
-
-  .login-btn {
-    background: var(--button-bg);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 16px;
-    margin-left: 4px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: background 0.3s ease;
-  }
-
-  .login-btn.cancel {
-    background: #aaa;
-    color: #fff;
-  }
-
-  .login-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-
-  .login-btn:hover:not(:disabled) {
-    background: var(--button-hover);
   }
 
   .github-btn {
@@ -356,31 +268,6 @@
     height: 1px;
     background: var(--header-border);
     margin: 8px 0;
-  }
-
-  .mobile-user-info {
-    width: 100%;
-    text-align: left;
-    padding: 10px 24px;
-    font-size: 16px;
-    color: var(--text-secondary);
-  }
-
-  .mobile-login-btn,
-  .mobile-logout-btn {
-    width: 100%;
-    text-align: left;
-    padding: 10px 24px;
-    font-size: 16px;
-    border-radius: 0;
-    margin: 0;
-    background: var(--button-bg);
-    color: #fff;
-  }
-
-  .mobile-login-btn:hover,
-  .mobile-logout-btn:hover {
-    background: var(--button-hover);
   }
 
   /* 动画样式 */
