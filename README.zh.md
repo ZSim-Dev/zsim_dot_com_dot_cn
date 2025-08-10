@@ -7,6 +7,7 @@
 ## 项目结构
 
 这是一个全栈Web应用程序，包含：
+
 - **前端**：使用Vue 3、TypeScript、Vite和Vue Router
 - **后端**：使用Python FastAPI和SQLite数据库
 - **功能特性**：
@@ -19,6 +20,7 @@
 ## 开发环境设置
 
 ### 前端 (Vue 3)
+
 ```bash
 cd frontend
 npm install
@@ -26,10 +28,13 @@ npm run dev
 ```
 
 ### 后端 (FastAPI)
+
 ```bash
 cd backend
 uv sync
-python main.py
+.venv\Scripts\activate  # On Unix like: .venv/bin/activate.sh
+cd ..
+uv run uvicorn backend.main:app --reload
 ```
 
 ## 文档

@@ -7,9 +7,10 @@ This is the official website for ZSim, a comprehensive simulation platform for t
 ## Project Structure
 
 This is a full-stack web application with:
+
 - **Frontend**: Vue 3 with TypeScript, Vite, and Vue Router
 - **Backend**: Python FastAPI with SQLite database
-- **Features**: 
+- **Features**:
   - Simulation platform for ZZZ
   - Documentation viewer
   - User authentication (email/SMS)
@@ -19,6 +20,7 @@ This is a full-stack web application with:
 ## Development Setup
 
 ### Frontend (Vue 3)
+
 ```bash
 cd frontend
 npm install
@@ -26,10 +28,13 @@ npm run dev
 ```
 
 ### Backend (FastAPI)
+
 ```bash
 cd backend
 uv sync
-python main.py
+.venv\Scripts\activate  # On Unix like: .venv/bin/activate.sh
+cd ..
+uv run uvicorn backend.main:app --reload
 ```
 
 ## Documentation
