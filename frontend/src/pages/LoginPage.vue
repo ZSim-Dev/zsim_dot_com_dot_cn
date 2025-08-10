@@ -414,16 +414,10 @@
 
         <!-- 登录模式切换 -->
         <div v-if="mode !== 'register'" class="login-mode-switch">
-          <button
-            :class="['mode-btn', { active: mode === 'login' }]"
-            @click="switchToLoginMode"
-          >
+          <button :class="['mode-btn', { active: mode === 'login' }]" @click="switchToLoginMode">
             {{ t('login.account_login') }}
           </button>
-          <button
-            :class="['mode-btn', { active: mode === 'email' }]"
-            @click="switchToEmailMode"
-          >
+          <button :class="['mode-btn', { active: mode === 'email' }]" @click="switchToEmailMode">
             {{ t('login.email_login') }}
           </button>
         </div>
