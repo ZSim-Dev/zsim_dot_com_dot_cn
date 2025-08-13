@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 
 [[package]]
@@ -229,7 +229,8 @@ dependencies = [
     { name = "aiosqlite" },
     { name = "alibabacloud-dysmsapi20170525" },
     { name = "fastapi" },
-    { name = "httpx" },
+    { name = "httpx", extra = ["socks"] },
+    { name = "polars" },
     { name = "pydantic", extra = ["email"] },
     { name = "python-multipart" },
     { name = "uvicorn" },
@@ -241,7 +242,8 @@ requires-dist = [
     { name = "aiosqlite", specifier = ">=0.21.0" },
     { name = "alibabacloud-dysmsapi20170525", specifier = "==4.1.2" },
     { name = "fastapi", specifier = ">=0.115.13" },
-    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "httpx", extras = ["socks"], specifier = ">=0.28.1" },
+    { name = "polars", specifier = ">=1.32.2" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.11.7" },
     { name = "python-multipart", specifier = ">=0.0.20" },
     { name = "uvicorn", specifier = ">=0.34.3" },
@@ -472,6 +474,11 @@ wheels = [
     { url = "https://pypi.tuna.tsinghua.edu.cn/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl", hash = "sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad", size = 73517, upload-time = "2024-12-06T15:37:21.509Z" },
 ]
 
+[package.optional-dependencies]
+socks = [
+    { name = "socksio" },
+]
+
 [[package]]
 name = "idna"
 version = "3.10"
@@ -524,6 +531,20 @@ wheels = [
     { url = "https://pypi.tuna.tsinghua.edu.cn/packages/b6/d6/a9d2c808f2c489ad199723197419207ecbfbc1776f6e155e1ecea9c883aa/multidict-6.6.3-cp313-cp313t-win_amd64.whl", hash = "sha256:9f97e181f344a0ef3881b573d31de8542cc0dbc559ec68c8f8b5ce2c2e91646d", size = 53011, upload-time = "2025-06-30T15:53:11.038Z" },
     { url = "https://pypi.tuna.tsinghua.edu.cn/packages/f2/40/b68001cba8188dd267590a111f9661b6256debc327137667e832bf5d66e8/multidict-6.6.3-cp313-cp313t-win_arm64.whl", hash = "sha256:ce8b7693da41a3c4fde5871c738a81490cea5496c671d74374c8ab889e1834fb", size = 45254, upload-time = "2025-06-30T15:53:12.421Z" },
     { url = "https://pypi.tuna.tsinghua.edu.cn/packages/d8/30/9aec301e9772b098c1f5c0ca0279237c9766d94b97802e9888010c64b0ed/multidict-6.6.3-py3-none-any.whl", hash = "sha256:8db10f29c7541fc5da4defd8cd697e1ca429db743fa716325f236079b96f775a", size = 12313, upload-time = "2025-06-30T15:53:45.437Z" },
+]
+
+[[package]]
+name = "polars"
+version = "1.32.2"
+source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
+sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/8a/07/7864688644139b1bc198c36e34e81581ec76c8d20ae57c4879914786b2a1/polars-1.32.2.tar.gz", hash = "sha256:b4c5cefc7cf7a2461f8800cf2c09976c47cb1fd959c6ef3024d5618b497f05d3", size = 4788876, upload-time = "2025-08-07T10:51:16.587Z" }
+wheels = [
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/f5/61/b251ce6755d0d3c6f4c8cb245941b80901624fce7efeb95b37c170da2565/polars-1.32.2-cp39-abi3-macosx_10_12_x86_64.whl", hash = "sha256:f21da6a5210898ec800b7e9e667fb53eb9161b7ceb812ee6555ff5661a00e517", size = 37770199, upload-time = "2025-08-07T10:50:05.627Z" },
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/22/74/ea073a88073cd6025b12850484f51d30dad695b51432a3f0a0439e2f8094/polars-1.32.2-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:d3f4e061312ef6c2a907378ce407a6132734fe1a13f261a1984a1a9ca2f6febc", size = 34461798, upload-time = "2025-08-07T10:50:10.452Z" },
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/ec/14/ee34ebe3eb842c83ca1d2d3af6ee02b08377e056ffad156c9a2b15a6d05c/polars-1.32.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a711a750cfc19f1f883d2b46895dd698abf4d446ca41c3bf510ced0ff1178057", size = 38280883, upload-time = "2025-08-07T10:50:14.168Z" },
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/af/ed/0f5ab777b0dc95936074266bc6fd9cf117886ebdd6685589437edfdbb186/polars-1.32.2-cp39-abi3-manylinux_2_24_aarch64.whl", hash = "sha256:d1c53a828eedc215fb0dabc7cef02c6f4ad042157512ddb99840fd42b8da1e8a", size = 35490843, upload-time = "2025-08-07T10:50:18.325Z" },
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/91/58/d2840554ef1c69e06a28ee928bdaa0d6a61af12205ff24c096628f217f99/polars-1.32.2-cp39-abi3-win_amd64.whl", hash = "sha256:5e1660a584e89e1d60cd89984feca38a695e491a966581fefe8be99c230ea154", size = 37897347, upload-time = "2025-08-07T10:50:22.247Z" },
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/b8/53/4eaaa4f219add46594db21a05a9a5629ec6af20bd859a90668d5a1448abc/polars-1.32.2-cp39-abi3-win_arm64.whl", hash = "sha256:cd390364f6f3927474bd0aed255103195b9d2b3eef0f0c5bb429db5e6311615e", size = 34059100, upload-time = "2025-08-07T10:50:26.445Z" },
 ]
 
 [[package]]
@@ -655,6 +676,15 @@ source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
 sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/a2/87/a6771e1546d97e7e041b6ae58d80074f81b7d5121207425c964ddf5cfdbd/sniffio-1.3.1.tar.gz", hash = "sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc", size = 20372, upload-time = "2024-02-25T23:20:04.057Z" }
 wheels = [
     { url = "https://pypi.tuna.tsinghua.edu.cn/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl", hash = "sha256:2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2", size = 10235, upload-time = "2024-02-25T23:20:01.196Z" },
+]
+
+[[package]]
+name = "socksio"
+version = "1.0.0"
+source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
+sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/f8/5c/48a7d9495be3d1c651198fd99dbb6ce190e2274d0f28b9051307bdec6b85/socksio-1.0.0.tar.gz", hash = "sha256:f88beb3da5b5c38b9890469de67d0cb0f9d494b78b106ca1845f96c10b91c4ac", size = 19055, upload-time = "2020-04-17T15:50:34.664Z" }
+wheels = [
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/37/c3/6eeb6034408dac0fa653d126c9204ade96b819c936e136c5e8a6897eee9c/socksio-1.0.0-py3-none-any.whl", hash = "sha256:95dc1f15f9b34e8d7b16f06d74b8ccf48f609af32ab33c608d08761c5dcbb1f3", size = 12763, upload-time = "2020-04-17T15:50:31.878Z" },
 ]
 
 [[package]]
