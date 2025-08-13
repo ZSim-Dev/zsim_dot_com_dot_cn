@@ -36,7 +36,12 @@
     "not_supported_title": "{category}",
     "not_supported_text": "该功能暂未开放，敬请期待！",
     "login_to_vote": "请先登录再投票",
-    "vote_failed": "投票失败，请稍后再试"
+    "vote_failed": "投票失败，请稍后再试",
+    "character_support": "角色支持度",
+    "action_modeling": "动作建模",
+    "buff_support": "Buff支持",
+    "cinema_support": "影画支持",
+    "frame_counting": "精细测帧"
   },
   "docs": {
     "toc_title": "目录",
@@ -46,7 +51,10 @@
     "load_error_console": "加载文档失败:"
   },
   "common": {
-    "ok": "确定"
+    "ok": "确定",
+    "fully_support": "完全支持",
+    "partially_support": "不完全支持",
+    "not_support": "不支持"
   },
   "login": {
     "account_login": "账号登录",

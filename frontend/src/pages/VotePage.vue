@@ -3,6 +3,7 @@
   import axios from 'axios'
   import { useI18n } from 'vue-i18n'
   import ToastNotification from '../components/ToastNotification.vue'
+  import { Character } from '@/apis/types'
 
   const { t, locale } = useI18n()
 
@@ -14,15 +15,6 @@
   ])
   const selectedCategoryKey = ref('character')
 
-  // 角色投票的临时数据
-  interface Character {
-    id: number
-    name: string
-    name_en: string
-    avatar: string
-    votes: number
-  }
-
   const characters = ref<Character[]>([])
   const votedCharacterIds = ref<number[]>([])
   const token = ref(localStorage.getItem('token') || '') // 从localStorage获取token
@@ -30,7 +22,7 @@
 
   async function fetchCharacters() {
     try {
-      const response = await axios.get('/api/vote/characters')
+      const response = await axios.get<Character[]>('/api/vote/characters')
       characters.value = response.data
     } catch (error) {
       console.error('获取角色列表失败:', error)
@@ -85,6 +77,13 @@
     return locale.value === 'en' ? char.name_en : char.name
   }
 
+  // 将支持度数值转换为图标
+  const mapSupportText = (rate: number) => {
+    if (rate >= 1) return `✅ ${t("common.fully_support")}`
+    else if (rate <= -1) return `❌ ${t("common.not_support")}`
+    else return `⚠️ ${t("common.partially_support")}`
+  }
+
   const currentCategoryLabel = computed(() => {
     const current = voteCategories.value.find(c => c.key === selectedCategoryKey.value)
     return current ? current.label : ''
@@ -120,6 +119,7 @@
           <div v-for="char in characters" :key="char.id" class="character-card">
             <img :src="char.avatar" :alt="getCharacterName(char)" class="avatar" />
             <span class="name">{{ getCharacterName(char) }}</span>
+            <span class="support">{{ mapSupportText(char.character_support) }}</span>
             <span class="votes">{{ char.votes }} {{ t('vote.votes') }}</span>
             <button
               class="vote-btn"
@@ -293,6 +293,15 @@
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--color-heading);
+  }
+
+  .support {
+    font-size: 1rem;
+    font-weight: 500;
+    height: 2rem;
+    line-height: 2rem;
+    vertical-align: middle;
+    color: var(--color-text);
   }
 
   .votes {
