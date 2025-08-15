@@ -32,10 +32,16 @@ npm run dev
 ```bash
 cd backend
 uv sync
-.venv\Scripts\activate  # On Unix like: .venv/bin/activate.sh
+.venv\Scripts\activate  # On Unix like: .venv/bin/activate
 cd ..
 uv run uvicorn backend.main:app --reload
 ```
+
+#### Notes
+
+1. If this is your first time starting the backend service, copy `backend/config.example.toml` to `backend/config.toml`.
+2. For local development, you can set `send_real_email = false` in `backend/config.toml` to disable real email sending.
+3. On macOS, if you encounter a `permission denied: .venv/bin/activate` error, try running `chmod +x .venv/bin/activate` to fix the permission issue.
 
 ## Documentation
 
