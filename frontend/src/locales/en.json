@@ -36,7 +36,12 @@
     "not_supported_title": "{category}",
     "not_supported_text": "This feature is not yet available, please stay tuned!",
     "login_to_vote": "Please log in to vote",
-    "vote_failed": "Vote failed, please try again later"
+    "vote_failed": "Vote failed, please try again later",
+    "character_support": "Character Support",
+    "action_modeling": "Action Modeling",
+    "buff_support": "Buff Support",
+    "cinema_support": "Cinema Support",
+    "frame_counting": "Frame Counting"
   },
   "docs": {
     "toc_title": "Table of Contents",
@@ -46,7 +51,10 @@
     "load_error_console": "Failed to load documentation:"
   },
   "common": {
-    "ok": "OK"
+    "ok": "OK",
+    "fully_support": "Fully Support",
+    "partially_support": "Partially Support",
+    "not_support": "Not Support"
   },
   "login": {
     "account_login": "Account Login",
